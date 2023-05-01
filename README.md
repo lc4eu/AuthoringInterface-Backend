@@ -109,7 +109,7 @@ Note - Open a terminal to perform steps 1 to 3.
 
 8. Run the following command to get the backend code -
 
-   - git clone https://github.com/v-a-r-s-h-a/AI_backend .
+   - git clone https://github.com/v-a-r-s-h-a/backend_AI .
 
 9. Setup Virtual Environment, run the following command in terminal -
 
