@@ -211,5 +211,9 @@ Note - Open a terminal to perform steps 1 to 3.
 
     - Note - If you cannot install a dependecy add --legacy-peer-deps to it
 
-31. Now you are in the client folder. Start the frontend with the following command -
+31. Open the file package.json in client. Before the line containing the word dependencies add the following line -
+
+- "proxy": "http://127.0.0.1:9999",
+
+32. Now you are in the client folder. Start the frontend with the following command -
     - "npm start"
