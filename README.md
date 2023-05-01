@@ -40,10 +40,10 @@ Note - Open a terminal to perform steps 1 to 3.
 
    - "cd"
 
-   3.2 Run the following command -
-   "sudo apt-get install python3-dev default-libmysqlclient-dev build-essential"
+     3.2 Run the following command -
+     "sudo apt-get install python3-dev default-libmysqlclient-dev build-essential"
 
-   3.3 Now run following commands to install mySQL server -
+     3.3 Now run following commands to install mySQL server -
 
    - sudo apt update
    - sudo apt install mysql-server
@@ -67,7 +67,7 @@ Note - Open a terminal to perform steps 1 to 3.
        - sudo mysql
          You will see - mysql> written at the end. This means installation was complete.
 
-   3.4 If you get error run the following commands then try the above steps of step 3.3 again from starting-
+   If you get error run the following commands then try the above steps of step 3.3 again from starting-
 
    - sudo apt-get purge mysql-server mysql-client mysql-common mysql-server-core-_ mysql-client-core-_
    - sudo rm -rf /etc/mysql /var/lib/mysql
@@ -78,27 +78,27 @@ Note - Open a terminal to perform steps 1 to 3.
 
      - https://www.youtube.com/watch?v=7VJiUJaF784
 
-   - Now follow the instructions in the video to install mySQL Workbench -
+   3.4 Now follow the instructions in the video to install mySQL Workbench -
 
-     - To install MySQL workbench download the repository configuration file from the given URL -
+   - To install MySQL workbench download the repository configuration file from the given URL -
 
-       - https://dev.mysql.com/downloads/repo/apt/
+     - https://dev.mysql.com/downloads/repo/apt/
 
-     - Use the following command to add MySQL repository URLs in the apt sources list so that you can install the software on your Ubuntu.
+   - Use the following command to add MySQL repository URLs in the apt sources list so that you can install the software on your Ubuntu.
 
-     - "cd Downloads"
-     - "sudo apt install ./mysql-apt-config_0.8.16-1_all.deb"
+   - "cd Downloads"
+   - "sudo apt install ./mysql-apt-config_0.8.16-1_all.deb"
 
-     - Update the apt cache using the following command to update the configuration URLs.
+   - Update the apt cache using the following command to update the configuration URLs.
 
-       - "sudo apt update"
+     - "sudo apt update"
 
-     - Now install MySQL workbench using the apt repository -
+   - Now install MySQL workbench using the apt repository -
 
-       - sudo apt install mysql-workbench-community
+     - sudo apt install mysql-workbench-community
 
-     - Launch MySQL Workbench
-       - mysql-workbench
+   - Launch MySQL Workbench
+     - mysql-workbench
 
 # Setup for backend -
 
