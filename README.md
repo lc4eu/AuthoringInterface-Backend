@@ -36,69 +36,33 @@ Note - Open a terminal to perform steps 1 to 3.
 
 3. The installation of MySQL server and workbench is also a requirement.
 
-   3.1 Open a terminal and go to the root directory by typing the following command -
+   3.1 Open a terminal and go to the root directory by typing the following command - "cd"
 
-   - "cd"
+   3.2 Run the following command -
+   "sudo apt-get install python3-dev default-libmysqlclient-dev build-essential"
 
-     3.2 Run the following command -
-     "sudo apt-get install python3-dev default-libmysqlclient-dev build-essential"
+   3.3 Now run following commands to install mySQL server -
 
-     3.3 Now run following commands to install mySQL server -
+   - "sudo apt update"
+   - "sudo apt install mysql-server"
+   - "sudo mysql"
+     Now you have entered the mysql environment. Type the following command in it to change the password.
+   - "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'new_password';"
+     - Note - put your desired password in place of 'new_password'
+   - You can exit mysql by pressing Ctrl + Z
 
-   - sudo apt update
-   - sudo apt install mysql-server
-   - sudo systemctl status mysql
-     - If this gives error run -
-       - sudo systemctl start mysql.service
-   - sudo mysql_secure_installation
+   Note - If you get error run the following commands to uninstall mysql-server and then try the above steps of step 3.3 again from starting-
 
-     - Set your password
+   - "sudo apt-get purge mysql-server mysql-client mysql-common mysql-server-core-\* mysql-client-core-\*"
+   - "sudo rm -rf /etc/mysql /var/lib/mysql"
+   - "sudo apt autoremove"
+   - "sudo apt autoclean"
 
-     - Note - If you face problem in setting your password while installing mysql-server use the following command to change it. On a terminal type the following commands.
-
-       - "mysql"
-         Now you have entered the mysql environment. Type the following command in it to change the password.
-       - "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'new_password';"
-         - Note - put your desired password in place of 'new_password'
-       - You can exit mysql by pressing Ctrl + Z
-
-     - Type the following command to check if installation was complete -
-
-       - sudo mysql
-         You will see - mysql> written at the end. This means installation was complete.
-
-   If you get error run the following commands then try the above steps of step 3.3 again from starting-
-
-   - sudo apt-get purge mysql-server mysql-client mysql-common mysql-server-core-_ mysql-client-core-_
-   - sudo rm -rf /etc/mysql /var/lib/mysql
-   - sudo apt autoremove
-   - sudo apt autoclean
-
-   - You can also refer the following video -
-
-     - https://www.youtube.com/watch?v=7VJiUJaF784
-
-   3.4 Now follow the instructions in the video to install mySQL Workbench -
-
-   - To install MySQL workbench download the repository configuration file from the given URL -
-
-     - https://dev.mysql.com/downloads/repo/apt/
-
-   - Use the following command to add MySQL repository URLs in the apt sources list so that you can install the software on your Ubuntu.
-
-   - "cd Downloads"
-   - "sudo apt install ./mysql-apt-config_0.8.16-1_all.deb"
-
-   - Update the apt cache using the following command to update the configuration URLs.
-
-     - "sudo apt update"
-
-   - Now install MySQL workbench using the apt repository -
-
-     - sudo apt install mysql-workbench-community
-
-   - Launch MySQL Workbench
-     - mysql-workbench
+4. Creation of database -
+   - Open a terminal and type the following command -
+     "sudo mysql"
+   - Type in the following command to create the database -
+     "CREATE DATABASE IF NOT EXISTS db2;"
 
 # Setup for backend -
 
