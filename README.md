@@ -5,8 +5,8 @@ Note - Open a terminal to perform steps 1 to 3.
 1. Python is a pre-requisite for the installation.
 
    - To check if you have python, run the following command -
-     - For windows - python –version
-     - For Ubuntu - python -V
+     - For windows - "python –version"
+     - For Ubuntu - "python -V"
 
    If you do not have it follow given instructions for the installation of python -
 
@@ -23,7 +23,7 @@ Note - Open a terminal to perform steps 1 to 3.
 2. After the installation of python, we need to install pip.
 
    - To check if you have pip, run the following command -
-     - pip -V
+     - "pip -V"
 
    If you do not have it follow given instructions for the installation of pip -
 
@@ -74,11 +74,11 @@ Note - Open a terminal to perform steps 1 to 3.
 
 7. Move inside the backend folder with the following command-
 
-   - cd backend
+   - "cd backend"
 
 8. Run the following command to get the backend code -
 
-   - git clone https://github.com/v-a-r-s-h-a/backend_AI .
+   - "git clone https://github.com/v-a-r-s-h-a/backend_AI ."
 
 9. Setup Virtual Environment, run the following command in terminal -
 
@@ -86,8 +86,8 @@ Note - Open a terminal to perform steps 1 to 3.
 
 10. Enable the virtual environment using the following command -
 
-    - For ubuntu - source env/bin/activate
-    - For windows - env/bin/activate
+    - For ubuntu - "source env/bin/activate"
+    - For windows - "env/bin/activate"
 
 11. Run the following commands in the terminal to install dependencies
 
@@ -109,18 +109,11 @@ Note - Open a terminal to perform steps 1 to 3.
 
     'MYSQL_PASSWORD' is the password that you set while setting mysql-server. Instead of ? type your password.
 
-15. For creating the database follow the given steps -
-
-    - Open MySQL workbench
-    - Run the following query -
-
-      - CREATE database db2;
-
-16. Run the backend using the following command -
+15. Run the backend using the following command -
 
     - python3 main.py
 
-17. Type "http://127.0.0.1:9999/" on your browser to enable the creation of databases.
+16. Type "http://127.0.0.1:9999/" on your browser to enable the creation of databases.
 
 # Setup for frontend -
 
