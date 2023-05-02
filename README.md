@@ -111,7 +111,7 @@ Note - Open a terminal to perform steps 1 to 3.
 
 15. Run the backend using the following command -
 
-    - python3 main.py
+    - "python3 main.py"
 
 16. Type "http://127.0.0.1:9999/" on your browser to enable the creation of databases.
 
@@ -121,23 +121,23 @@ Note - Open a terminal to perform steps 1 to 3.
 
 19. Install nodejs if you do not have it by running the following commands-
 
-    - sudo apt update
-    - sudo apt install nodejs
-    - node -v
-    - sudo apt-get install npm
+    - "sudo apt update"
+    - "sudo apt install nodejs"
+    - "node -v"
+    - "sudo apt-get install npm"
 
 20. Update the node to latest verison -
 
-    - curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash -
-    - sudo apt-get install -y nodejs
+    - "curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash -"
+    - "sudo apt-get install -y nodejs"
 
 21. Install create-react-app to make react apps -
 
-    - npm install create-react-app
+    - "npm install create-react-app"
 
 22. Run the following command to create a react app -
 
-    - npx create-react-app client
+    - "npx create-react-app client"
 
 23. A folder named client can be seen in the AuthoringInterface folder.
 
@@ -146,30 +146,30 @@ Note - Open a terminal to perform steps 1 to 3.
 25. Come back to the terminal. At the moment you will be in the AuthoringInterface folder.
 
 26. Enter the client folder by running the command -
-    - cd client
+    - "cd client"
 27. Move inside the src folder with the command -
-    - cd src
+    - "cd src"
 28. Now you are in the src folder. Run the following command to get the frontend code.
 
-    - git clone https://github.com/v-a-r-s-h-a/src_AI .
+    - "git clone https://github.com/v-a-r-s-h-a/src_AI ."
 
 29. Move out of the src folder with the command -
 
-    - cd ..
+    - "cd .."
 
 30. Install all the following dependencies -
 
-    - npm install axios --legacy-peer-deps
-    - npm install file-saver --legacy-peer-deps
-    - npm install jszip --save --legacy-peer-deps
-    - npm install --legacy-peer-deps @material-ui/core
-    - npm install --legacy-peer-deps @material-ui/icons
-    - npm install --legacy-peer-deps react-icons
-    - npm install @emotion/react @emotion/styled --legacy-peer-deps
-    - npm install @mui/material --legacy-peer-deps
-    - npm install reactjs-popup --save --legacy-peer-deps
-    - npm install --save react-modal --legacy-peer-deps
-    - npm install react-router-dom --legacy-peer-deps
+    - "npm install axios --legacy-peer-deps"
+    - "npm install file-saver --legacy-peer-deps"
+    - "npm install jszip --save --legacy-peer-deps"
+    - "npm install --legacy-peer-deps @material-ui/core"
+    - "npm install --legacy-peer-deps @material-ui/icons"
+    - "npm install --legacy-peer-deps react-icons"
+    - "npm install @emotion/react @emotion/styled --legacy-peer-deps"
+    - "npm install @mui/material --legacy-peer-deps"
+    - "npm install reactjs-popup --save --legacy-peer-deps"
+    - "npm install --save react-modal --legacy-peer-deps"
+    - "npm install react-router-dom --legacy-peer-deps"
 
     - Note - If you cannot install a dependecy add --legacy-peer-deps to it
 
