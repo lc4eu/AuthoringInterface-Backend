@@ -83,6 +83,13 @@ Note - Open a terminal to perform steps 1 to 3.
 9. Setup Virtual Environment, run the following command in terminal -
 
    - "python3 -m venv env"
+     Note - If you get the following error -
+     - bash: /home/name/AuthoringInterface/backend/env/bin/python3: No such file or directory
+       Try the following command -
+       - python -m venv env
+         If you still get this error. Do the following -
+       - sudo ln -s /usr/bin/python3 /usr/bin/python
+       - python -m venv env
 
 10. Enable the virtual environment using the following command -
 
