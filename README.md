@@ -177,6 +177,7 @@ Note - Open a terminal to perform steps 1 to 3.
     - "npm install reactjs-popup --save --legacy-peer-deps"
     - "npm install --save react-modal --legacy-peer-deps"
     - "npm install react-router-dom --legacy-peer-deps"
+    - "npm install @mui/icons-material --legacy-peer-deps"
 
     - Note - If you cannot install a dependecy add --legacy-peer-deps to it
 

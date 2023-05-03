@@ -69,6 +69,14 @@ def signup():
         mysql.connection.commit()
         return jsonify(message='You have successfully registered!'), 200
 
+@app.route('/api/usertype/', methods=['GET', 'POST'])
+def usertype():
+    if 'user_type' in session:
+        reviewer_role= session['user_type']
+        print(reviewer_role)
+        return str(reviewer_role)
+    else:
+        return ""
 
 @app.route('/api/login/', methods=['GET', 'POST'])
 def login():
@@ -77,11 +85,8 @@ def login():
         data = json.loads(request.data)
         email = data.get('email')
         password = data.get('password')
-        reviewer_role = data.get('reviewer_role')
-        if reviewer_role == 'author':
-            reviewer_role_value = 'No'
-        elif reviewer_role == 'reviewer':
-            reviewer_role_value = 'Yes'
+        reviewer_role = data.get('role')
+        print(reviewer_role)
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM author WHERE email = % s AND password = % s ', (email, password))
         author = cursor.fetchone()
@@ -89,18 +94,8 @@ def login():
             auth_id = author['author_id']
             session['loggedIn']=True
             session['author_id']=auth_id
-            if reviewer_role_value == 'No' and author['reviewer_role'] == 'No':
-                msg = 'Logged in successfully!'
-                return jsonify({'message': msg}), 200
-            elif reviewer_role_value == 'Yes' and author['reviewer_role'] == 'Yes':
-                msg = 'Logged in successfully!'
-                return jsonify({'message': msg}), 201
-            elif reviewer_role_value == 'Yes' and author['reviewer_role'] == 'No':
-                msg = 'Not successfully!'
-                return jsonify({'message': msg}), 202
-            elif reviewer_role_value == 'No' and author['reviewer_role'] == 'Yes':
-                msg = 'Logged in successfully!'
-                return jsonify({'message': msg}), 203
+            session['user_type']=reviewer_role
+            return jsonify("Logged in"), 200
         else:
             return jsonify({'error': 'Invalid credentials'}), 401
 
@@ -570,8 +565,8 @@ def delete_discourse():
     cursor.execute(
         'DELETE FROM discourse WHERE discourse.discourse_id={0}'.format(dis_id))
     mysql.connection.commit()
-    return render_template("Dashboard.jsx"),200
-    # return redirect(http://localhost:3000/url_for('dashboard'))
+    # return "Done",200
+    return redirect("http://localhost:3000/dashboard")
 
 @app.route('/update_status')
 def update_status():
