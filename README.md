@@ -139,6 +139,9 @@ Note - Open a terminal to perform steps 1 to 3.
     - "sudo snap install curl"
     - "curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash -"
     - "sudo apt-get install -y nodejs"
+      Note - If you get error in this step, run the following command -
+      - sudo apt remove nodejs
+        After you have have run the above command restart from step 19.
 
 21. Install create-react-app to make react apps -
 
