@@ -60,7 +60,7 @@ Note - Open a terminal to perform steps 1 to 3.
 
 4. Creation of database -
    - Open a terminal and type the following command -
-     "sudo mysql"
+     "mysql -u root -p"
    - Type in the following command to create the database -
      "CREATE DATABASE IF NOT EXISTS db2;"
 
@@ -79,6 +79,7 @@ Note - Open a terminal to perform steps 1 to 3.
 8. Run the following command to get the backend code -
 
    - "git clone https://github.com/v-a-r-s-h-a/backend_AI ."
+     Note - Do not forget to add the dot
 
 9. Setup Virtual Environment, run the following command in terminal -
 
@@ -102,19 +103,19 @@ Note - Open a terminal to perform steps 1 to 3.
     - "python3 -m ensurepip"
     - "pip install -r requirements.txt"
 
-12. Inside the env\python3.10\site-packages\flask_navigation\item.py, change line 131 and 132 with below code
+12. Inside the env\lib\python3.10\site-packages\flask_navigation\item.py, change line 131 and 132 with below code
     class ItemCollection(collections.abc.MutableSequence,
     collections.abc.Iterable):
 
-13. Inside the env\python3.10\site-packages\flask_navigation\navbar.py, change line 7 below code
+13. Inside the env\lib\python3.10\site-packages\flask_navigation\navbar.py, change line 7 below code
     class NavigationBar(collections.abc.Iterable):
 
-14. Now the config.py file needs to modified, the variable need to updated with the values that you have created while setting up your mySQL workbench environment.
+14. Now the config.py file needs to modified, you can find this file in the backend folder. The variable needs to updated with the values that you created while setting up your mySQL workbench environment.
 
-    - The variable that need to be changed are -
+    - The variable that need to be changed is -
       app.config['MYSQL_PASSWORD'] = '?'
 
-    'MYSQL_PASSWORD' is the password that you set while setting mysql-server. Instead of ? type your password.
+    The value for 'MYSQL_PASSWORD' is the password that you set while setting mysql-server. Instead of ? type your password.
 
 15. Run the backend using the following command -
 
@@ -124,7 +125,7 @@ Note - Open a terminal to perform steps 1 to 3.
 
 # Setup for frontend -
 
-18. Open a new terminal. Make sure you are in the AuthoringInterface folder.
+18. Open a new terminal in VS Code. Make sure you are in the AuthoringInterface folder.
 
 19. Install nodejs if you do not have it by running the following commands-
 
@@ -135,6 +136,7 @@ Note - Open a terminal to perform steps 1 to 3.
 
 20. Update the node to latest verison -
 
+    - "sudo snap install curl"
     - "curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash -"
     - "sudo apt-get install -y nodejs"
 
@@ -159,6 +161,7 @@ Note - Open a terminal to perform steps 1 to 3.
 28. Now you are in the src folder. Run the following command to get the frontend code.
 
     - "git clone https://github.com/v-a-r-s-h-a/src_AI ."
+      Note - Do not forget to add the dot
 
 29. Move out of the src folder with the command -
 
