@@ -131,58 +131,176 @@ def uniqu_dis():
     else :
         return "No",400
 
-@app.route('/usrgenerate', methods=['GET', 'POST'])
-@cross_origin()# @login_required
+
+@app.route('/usrgenerate', methods = ['GET','POST'])
+@cross_origin()
+# @login_required
 def usrgenerate():
-
-    if request.method == "POST" and 'sentences' in request.form and 'discourse_name' in request.form:
-        sentences = request.json['sentences']
-        discourse_name = request.json['discourse_name']
+    if request.method == "POST":
+        data = json.loads(request.data)
+        sentences = data.get('sentences')
+        discourse_name = data.get('discourse_name')
+        
         print(sentences)
-
-        email = session.get('email')
-        print(email)
+        print(discourse_name)
 
         # if request.form.get('Save Sentences') == 'Save discourse':
         # Saving user details to the discourse table
+        author_id=''
+        if 'author_id' in session:
+            author_id= session['author_id']
+        author_id='1'
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute(
-            "SELECT author_id FROM author WHERE email = %s", [email])
-        author_id = session["author_id"]
-        # (cursor.fetchone())['author_id']
-        # print(author_id)
-        cursor.execute("INSERT INTO discourse(author_id, sentences, discourse_name) VALUES(%s, %s, %s)",
-                       (author_id, sentences, discourse_name))
+        
+        cursor.execute("INSERT INTO discourse(author_id, sentences, discourse_name) VALUES(%s, %s, %s)",(author_id, sentences, discourse_name))
         mysql.connection.commit()
         row_id = cursor.lastrowid
         list_usr = list(displayUSR(sentences))
 
-        # saving generated usr in database in usr table
+        print(list_usr)
+
+        #saving generated usr in database in usr table
         for i in range(len(list_usr)):
-            cursor.execute("INSERT INTO usr(author_id,discourse_id,sentence_id,orignal_USR_json) VALUES(%s,%s,%s,%s)",
-                           (author_id, row_id, 1, displayUSR(sentences)[i]))
-        #    {'Concept': ['eka_1', 'Sera_1', 'jaMgala_1', 'so_1-0_rahA_WA_1'], 'Index': [1, 2, 3, 4], 'SemCateOfNouns': ['', '', '', ''], 'GNP': ['', '[m sg a]', '[m sg a]', ''], 'DepRel': ['2:card', '4:k1', '4:k7p', '0:main'], 'Discourse': ['', '', '', ''], 'SpeakersView': ['', '', '', ''], 'Scope': ['', '', '', ''], 'SentenceType': ['affirmative']}))
-
-        mysql.connection.commit()
-
-        # saving sentence entered by user in updatedSentence.txt
-        with open("client/public/updatedSentence.txt", "w") as sentfile:
-            str2 = ""
-            str_end = ["।", "|", "?", "."]
+            cursor.execute("INSERT INTO usr(author_id,discourse_id,sentence_id,orignal_USR_json) VALUES(%s,%s,%s,%s)", (author_id,row_id, i+1, displayUSR(sentences)[i]))
+            mysql.connection.commit()
+    
+        #saving sentence entered by user in updatedSentence.txt
+        with open("../client/public/updatedSentence.txt", "w",encoding='utf-8') as sentfile:
+            str2=""
+            str_end=["।","|","?","."]
             for word in sentences:
-                str2 += word
+                str2+=word
                 if word in str_end:
-                    str2 = str2.strip()
+                    str2=str2.strip()
                     sentfile.write(str2+"\n")
-                    str2 = ""
-
-        # saving generated usr in data.json
-        with open("client/src/data/data.json", "w") as f:
-            f.write(str(list_usr).replace("'", '"'))
+                    str2=""
+        
+        #saving generated usr in data.json
+        with open("../client/src/data/data.json","w",encoding='utf-8') as f:
+            f.write(str(list_usr).replace("'",'"'))
             f.close()
             flash("USR Generated")
 
+            
         return jsonify(message='USR Generated!')
+    return jsonify(message='USR Generated!')
+
+def displayUSR(corpus_for_usr):
+    ###Pre-processing of the corpus for USR generation.
+    str1=corpus_for_usr
+    if corpus_for_usr is None:
+        return jsonify("Not a Valid Sentence")
+    f=open("./USRGenerator/parser/sentences_for_USR","w",encoding='utf-8')
+    str_end=["।","|","?","."]
+    str2=""
+    sent_id=0
+    for word in str1:
+        str2+=word
+        if word in str_end:
+            str2=str2.strip()
+            f.write(str(sent_id)+"  "+str2+"\n")
+            sent_id+=1
+            str2=""
+    f.close()
+    ###Clean up bulk USRs directory
+    for file in os.listdir("./USRGenerator/parser/bulk_USRs"):
+        os.remove("./USRGenerator/parser/bulk_USRs/"+file)
+    with open("./USRGenerator/parser/sentences_for_USR","r",encoding='utf-8') as f:
+        for data in f:
+            file_to_paste=open("./USRGenerator/parser/txt_files/bh-1","w",encoding='utf-8')
+            file_to_paste_temp=open("./USRGenerator/parser/bh-2","w",encoding='utf-8')
+            sent=data.split("  ")[1]
+            s_id=data.split("  ")[0]
+            file_to_paste.write(sent)
+            file_to_paste_temp.write(sent)
+            file_to_paste_temp.close()
+            file_to_paste.close()
+            # os.system("cd /mnt/c/Users/gupta/OneDrive/Desktop/USR_GENERATOR/parser && ls" )
+            # os.system("ls")
+            os.system("python ./USRGenerator/parser/sentence_check.py")
+            os.system("sh./USRGenerator/parser/makenewusr.sh ./USRGenerator/parser/txt_files/bh-1")
+            os.system("python ./USRGenerator/parser/generate_usr.py>./USRGenerator/parser/bulk_USRs/"+s_id)
+            os.system("python ./USRGenerator/parser/delete_1.py")
+    generated_usrs={}
+    gs = []
+    for file in os.listdir("./USRGenerator/parser/bulk_USRs"):
+        usr_file=open("./USRGenerator/parser/bulk_USRs/"+file,"r",encoding='utf-8')
+        usr_list=usr_file.readlines()
+        usr_dict={}
+        # usr_dict["sentence_id"]=0,
+        # usr_dict['sentence']=usr_list[0].strip()
+        usr_dict['Concept']=usr_list[2].strip().split(",")
+        usr_dict['Index']=[int(x) for x in usr_list[3].split(",")]
+        usr_dict['SemCateOfNouns']=usr_list[4].strip().split(",")
+        usr_dict['GNP']=usr_list[5].strip().split(",")
+        usr_dict['DepRel']=usr_list[6].strip().split(",")
+        usr_dict['Discourse']=usr_list[7].strip().split(",")
+        usr_dict['SpeakersView']=usr_list[8].strip().split(",")
+        usr_dict['Scope']=usr_list[9].strip().split(",")
+        usr_dict['SentenceType']=usr_list[10].strip().split(",")
+        # generated_usrs[file]=usr_dict
+        gs.append(usr_dict)
+    # print(gs[0])
+    # print(gs)
+    return gs
+    # return jsonify(generated_usrs)
+
+# sent = "एक समय की बात है।"
+# print(displayUSR(sent))
+
+
+# @app.route('/usrgenerate', methods=['GET', 'POST'])
+# @cross_origin()# @login_required
+# def usrgenerate():
+
+#     if request.method == "POST" and 'sentences' in request.form and 'discourse_name' in request.form:
+#         sentences = request.json['sentences']
+#         discourse_name = request.json['discourse_name']
+#         print(sentences)
+
+#         email = session.get('email')
+#         print(email)
+
+#         # if request.form.get('Save Sentences') == 'Save discourse':
+#         # Saving user details to the discourse table
+#         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+#         cursor.execute(
+#             "SELECT author_id FROM author WHERE email = %s", [email])
+#         author_id = session["author_id"]
+#         # (cursor.fetchone())['author_id']
+#         # print(author_id)
+#         cursor.execute("INSERT INTO discourse(author_id, sentences, discourse_name) VALUES(%s, %s, %s)",
+#                        (author_id, sentences, discourse_name))
+#         mysql.connection.commit()
+#         row_id = cursor.lastrowid
+#         list_usr = list(displayUSR(sentences))
+
+#         # saving generated usr in database in usr table
+#         for i in range(len(list_usr)):
+#             cursor.execute("INSERT INTO usr(author_id,discourse_id,sentence_id,orignal_USR_json) VALUES(%s,%s,%s,%s)",
+#                            (author_id, row_id, 1, displayUSR(sentences)[i]))
+#         #    {'Concept': ['eka_1', 'Sera_1', 'jaMgala_1', 'so_1-0_rahA_WA_1'], 'Index': [1, 2, 3, 4], 'SemCateOfNouns': ['', '', '', ''], 'GNP': ['', '[m sg a]', '[m sg a]', ''], 'DepRel': ['2:card', '4:k1', '4:k7p', '0:main'], 'Discourse': ['', '', '', ''], 'SpeakersView': ['', '', '', ''], 'Scope': ['', '', '', ''], 'SentenceType': ['affirmative']}))
+
+#         mysql.connection.commit()
+
+#         # saving sentence entered by user in updatedSentence.txt
+#         with open("client/public/updatedSentence.txt", "w") as sentfile:
+#             str2 = ""
+#             str_end = ["।", "|", "?", "."]
+#             for word in sentences:
+#                 str2 += word
+#                 if word in str_end:
+#                     str2 = str2.strip()
+#                     sentfile.write(str2+"\n")
+#                     str2 = ""
+
+#         # saving generated usr in data.json
+#         with open("client/src/data/data.json", "w") as f:
+#             f.write(str(list_usr).replace("'", '"'))
+#             f.close()
+#             flash("USR Generated")
+
+#         return jsonify(message='USR Generated!')
 
 @app.route('/getUSRid')
 def getusrid():
@@ -329,7 +447,7 @@ def usr_details(USR_ID):
 def resource_not_found(e):
     return jsonify(error=str("Invalid URL")), 404
 
-def displayUSR(corpus_for_usr):
+# def displayUSR(corpus_for_usr):
     # Pre-processing of the corpus for USR generation.
     str1 = corpus_for_usr
     if corpus_for_usr is None:
@@ -401,6 +519,7 @@ def displayUSR(corpus_for_usr):
         gs.append(usr_dict)
     return jsonify(gs)
     # return "एक समय की बात है।"
+
 
 @ app.route('/logout')
 def logout():
