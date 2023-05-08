@@ -129,10 +129,27 @@ Note - Open a terminal to perform steps 1 to 3.
 
 19. Install nodejs if you do not have it by running the following commands-
 
-    - "sudo apt update"
-    - "sudo apt install nodejs"
-    - "node -v"
-    - "sudo apt-get install npm"
+        - "sudo apt update"
+        - "sudo apt install nodejs"
+        - "node -v"
+        - "sudo apt-get install npm"
+
+        - Note - If you get the following error -
+        - dpkg: error processing package mysql-server (--configure):dependency problems - leaving          unconfigured
+          No apport report written because the error message indicates its a followup error from a previous failure.
+          Errors were encountered while processing:
+          mysql-server-8.0
+          mysql-server
+          E: Sub-process /usr/bin/dpkg returned an error code (1)
+        - Try the following solution -
+          -Purge mysql first -
+            - "sudo apt-get purge mysql*"
+            - "sudo apt-get autoremove"
+            - "sudo apt-get autoclean"
+            - "sudo apt-get dist-upgrade"
+
+          - Now reinstall mysql -
+            - "sudo apt-get install mysql-server"
 
 20. Update the node to latest verison -
 
