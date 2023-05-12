@@ -141,8 +141,6 @@ def usrgenerate():
         sentences = data.get('sentences')
         discourse_name = data.get('discourse_name')
         
-        print(sentences)
-        print(discourse_name)
 
         # if request.form.get('Save Sentences') == 'Save discourse':
         # Saving user details to the discourse table
@@ -157,7 +155,6 @@ def usrgenerate():
         row_id = cursor.lastrowid
         list_usr = list(displayUSR(sentences))
 
-        print(list_usr)
 
         #saving generated usr in database in usr table
         for i in range(len(list_usr)):
@@ -182,7 +179,6 @@ def usrgenerate():
             flash("USR Generated")
 
             
-        return jsonify(message='USR Generated!')
     return jsonify(message='USR Generated!')
 
 def displayUSR(corpus_for_usr):
@@ -207,6 +203,7 @@ def displayUSR(corpus_for_usr):
         os.remove("./USRGenerator/parser/bulk_USRs/"+file)
     with open("./USRGenerator/parser/sentences_for_USR","r",encoding='utf-8') as f:
         for data in f:
+            print(data)
             file_to_paste=open("./USRGenerator/parser/txt_files/bh-1","w",encoding='utf-8')
             file_to_paste_temp=open("./USRGenerator/parser/bh-2","w",encoding='utf-8')
             sent=data.split("  ")[1]
@@ -217,14 +214,15 @@ def displayUSR(corpus_for_usr):
             file_to_paste.close()
             # os.system("cd /mnt/c/Users/gupta/OneDrive/Desktop/USR_GENERATOR/parser && ls" )
             # os.system("ls")
-            os.system("python ./USRGenerator/parser/sentence_check.py")
-            os.system("sh./USRGenerator/parser/makenewusr.sh ./USRGenerator/parser/txt_files/bh-1")
-            os.system("python ./USRGenerator/parser/generate_usr.py>./USRGenerator/parser/bulk_USRs/"+s_id)
-            os.system("python ./USRGenerator/parser/delete_1.py")
+            os.system("python3 ./USRGenerator/parser/sentence_check.py")
+            os.system("sh ./USRGenerator/parser/makenewusr.sh ./USRGenerator/parser/txt_files/bh-1")
+            os.system("python3 ./USRGenerator/parser/generate_usr.py>./USRGenerator/parser/bulk_USRs/"+s_id)
+            os.system("python3 ./USRGenerator/parser/delete_1.py")
     generated_usrs={}
     gs = []
     for file in os.listdir("./USRGenerator/parser/bulk_USRs"):
         usr_file=open("./USRGenerator/parser/bulk_USRs/"+file,"r",encoding='utf-8')
+       
         usr_list=usr_file.readlines()
         usr_dict={}
         # usr_dict["sentence_id"]=0,
