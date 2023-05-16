@@ -388,12 +388,21 @@ def orignal_usr_fetch():
     # print("Hello ",dis_id)
     query = 'SELECT e1.usr_id, e1.edited_usr, e1.edit_date,e1.status FROM edit e1 INNER JOIN ( SELECT usr_id, MAX(edit_date) AS max_edit_date FROM edit WHERE discourse_id =%s GROUP BY usr_id ) e2 ON e1.usr_id = e2.usr_id AND e1.edit_date = e2.max_edit_date WHERE e1.discourse_id = %s ORDER BY e1.usr_id'
     params = (dis_id, dis_id)
-    print("Executing query:", query % params)
+    # print("Executing query:", query % params)
     cursor.execute(query, params)
     author_name = cursor.fetchall()
     respone = jsonify(author_name)
     respone.status_code = 200
     return respone
+
+
+@app.route('/api/specific_discourse_usr')
+def specific_discourse_usr():
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute(
+        'SELECT USR_ID,USR_status,create_date,orignal_USR_json FROM usr WHERE discourse_id={0};'.format("5"))
+    response = cursor.fetchall()
+    return jsonify(response), 200
 
 
 @app.route('/sentence_id_fetch')
@@ -466,79 +475,6 @@ def usr_details(USR_ID):
 @ app.errorhandler(404)
 def resource_not_found(e):
     return jsonify(error=str("Invalid URL")), 404
-
-# def displayUSR(corpus_for_usr):
-    # Pre-processing of the corpus for USR generation.
-    str1 = corpus_for_usr
-    if corpus_for_usr is None:
-        return jsonify("Not a Valid Sentence")
-
-    f = open(
-        "/home/var31/parser/sentences_for_USR", "w")
-    # f = open(
-    #     "/mnt/c/Users/gupta/OneDrive/Desktop/USR_GENERATOR/parser/sentences_for_USR", "w")
-    str_end = ["।", "|", "?", "."]
-    str2 = ""
-    sent_id = 0
-    for word in str1:
-
-        str2 += word
-        if word in str_end:
-            str2 = str2.strip()
-            f.write(str(sent_id)+"  "+str2+"\n")
-            sent_id += 1
-            str2 = ""
-    f.close()
-    # Clean up bulk USRs directory
-    # for file in os.listdir("/mnt/c/Users/gupta/OneDrive/Desktop/USR_GENERATOR/parser/bulk_USRs"):
-    #     os.remove(
-    #         "/mnt/c/Users/gupta/OneDrive/Desktop/USR_GENERATOR/parser/bulk_USRs/"+file)
-    # with open("/mnt/c/Users/gupta/OneDrive/Desktop/USR_GENERATOR/parser/sentences_for_USR", "r") as f:
-    for file in os.listdir("/home/var31/parser/bulk_USRs"):
-        os.remove(
-            "/home/var31/parser/bulk_USRs/"+file)
-    with open("/home/var31/parser/sentences_for_USR", "r") as f:
-        for data in f:
-            file_to_paste = open("/home/var31/parser/txt_files/bh-1", "w")
-            # "/mnt/c/Users/gupta/OneDrive/Desktop/USR_GENERATOR/parser/txt_files/bh-1", "w")
-
-            file_to_paste_temp = open("/home/var31/parser/bh-2", "w")
-
-            sent = data.split("  ")[1]
-            s_id = data.split("  ")[0]
-            file_to_paste.write(sent)
-            file_to_paste_temp.write(sent)
-            file_to_paste_temp.close()
-            file_to_paste.close()
-            # os.system("cd /home/var31/parser")
-            # os.system("ls")
-            os.system(
-                "python3 /home/var31/parser/sentence_check.py")
-            os.system(
-                "sh /home/var31/parser/makenewusr.sh /home/var31/parser/txt_files/bh-1")
-            os.system(
-                "python3 /home/var31/parser/generate_usr.py>/home/var31/parser/bulk_USRs/"+s_id)
-            os.system(
-                "python3 /home/var31/parser/delete_1.py")
-
-    gs = []
-    for file in os.listdir("/home/var31/parser/bulk_USRs"):
-        usr_file = open("/home/var31/parser/bulk_USRs/"+file, "r")
-        usr_list = usr_file.readlines()
-        print(usr_list)
-        usr_dict = {}
-        usr_dict['Concept'] = usr_list[2].strip().split(",")
-        usr_dict['Index'] = [int(x) for x in usr_list[3].split(",")]
-        usr_dict['SemCateOfNouns'] = usr_list[4].strip().split(",")
-        usr_dict['GNP'] = usr_list[5].strip().split(",")
-        usr_dict['DepRel'] = usr_list[6].strip().split(",")
-        usr_dict['Discourse'] = usr_list[7].strip().split(",")
-        usr_dict['SpeakersView'] = usr_list[8].strip().split(",")
-        usr_dict['Scope'] = usr_list[9].strip().split(",")
-        usr_dict['SentenceType'] = usr_list[10].strip().split(",")
-        gs.append(usr_dict)
-    return jsonify(gs)
-    # return "एक समय की बात है।"
 
 
 @ app.route('/logout')
@@ -720,15 +656,17 @@ def delete_discourse():
 def update_status():
     dis_id = request.args.get('dis_id')
     s_value = request.args.get('s_value')
+    usr_id = request.args.get('usr_id')
+    print("bdsfbd", usr_id)
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
     cursor.execute(
-        'UPDATE usr SET USR_status={0} WHERE discourse_id={1}'.format(s_value, dis_id))
+        'UPDATE usr SET USR_status={0} WHERE discourse_id={1} AND USR_ID={2}'.format(s_value, dis_id, usr_id))
     cursor.execute(
-        'UPDATE edit SET status={0} WHERE discourse_id={1}'.format(s_value, dis_id))
+        'UPDATE edit SET status={0} WHERE discourse_id={1} AND USR_ID={2}'.format(s_value, dis_id, usr_id))
 
     mysql.connection.commit()
-    return redirect("http://localhost:3000/dashboard")
+    return "Status updated", 200
 
 
 @app.route('/semcateofnouns/', methods=['GET'])
