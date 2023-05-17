@@ -142,14 +142,8 @@ Note - Open a terminal to perform steps 1 to 3.
           mysql-server
           E: Sub-process /usr/bin/dpkg returned an error code (1)
         - Try the following solution -
-          -Purge mysql first -
-            - "sudo apt-get purge mysql*"
-            - "sudo apt-get autoremove"
-            - "sudo apt-get autoclean"
-            - "sudo apt-get dist-upgrade"
-
-          - Now reinstall mysql -
-            - "sudo apt-get install mysql-server"
+          - "sudo apt-get remove --purge nodejs"
+          Repeat the commands of step 19 from beginning to setup node properly.
 
 20. Update the node to latest verison -
 
