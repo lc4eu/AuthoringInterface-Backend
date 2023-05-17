@@ -45,6 +45,7 @@ def index():
     cursor.execute(
         "CREATE TABLE IF NOT EXISTS demlo(demlo_id int AUTO_INCREMENT, demlo_txt JSON, PRIMARY KEY (demlo_id))")
     cursor.execute("CREATE TABLE IF NOT EXISTS edit(edit_id int AUTO_INCREMENT, edited_USR MEDIUMTEXT, edit_date datetime default now(), author_id int,  discourse_id int, USR_ID int, FOREIGN KEY (author_id) REFERENCES author(author_id),FOREIGN KEY (discourse_id) REFERENCES discourse(discourse_id), FOREIGN KEY (USR_ID) REFERENCES usr(USR_ID), status varchar(255), PRIMARY KEY(edit_id), sent_id varchar(255))")
+    cursor.execute("CREATE TABLE IF NOT EXISTS `db2`.`semcateofnouns` (`scn_id` INT NOT NULL AUTO_INCREMENT,`scn_value` VARCHAR(45) NULL,`scn_title` VARCHAR(255) NULL,PRIMARY KEY (`scn_id`));")
     mysql.connection.commit()
     return "Backend Running", 200
 
