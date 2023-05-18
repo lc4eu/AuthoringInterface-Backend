@@ -677,5 +677,29 @@ def get_nouns():
     result = cursor.fetchall()
     return jsonify([dict(row) for row in result])
 
+
+@app.route('/dbsentencetype/', methods=['GET'])
+def get_sentencetype():
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute("SELECT * FROM sentencetype;")
+    result = cursor.fetchall()
+    return jsonify([dict(row) for row in result])
+
+
+@app.route('/dbspeakersview/', methods=['GET'])
+def get_speakersview():
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute("SELECT * FROM speakersview;")
+    result = cursor.fetchall()
+    return jsonify([dict(row) for row in result])
+
+
+@app.route('/dbdeprelation/', methods=['GET'])
+def get_deprelation():
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute("SELECT * FROM deprelation;")
+    result = cursor.fetchall()
+    return jsonify([dict(row) for row in result])
+
 # if __name__=='__main__':
 #     app.run(host='0.0.0.0',port=9999)
