@@ -389,7 +389,7 @@ def orignal_usr_fetch():
     # print("Hello ",dis_id)
     query = 'SELECT e1.usr_id, e1.edited_usr, e1.edit_date,e1.status FROM edit e1 INNER JOIN ( SELECT usr_id, MAX(edit_date) AS max_edit_date FROM edit WHERE discourse_id =%s GROUP BY usr_id ) e2 ON e1.usr_id = e2.usr_id AND e1.edit_date = e2.max_edit_date WHERE e1.discourse_id = %s ORDER BY e1.usr_id'
     params = (dis_id, dis_id)
-    # print("Executing query:", query % params)
+    print("Executing query:", query % params)
     cursor.execute(query, params)
     author_name = cursor.fetchall()
     respone = jsonify(author_name)
@@ -653,7 +653,7 @@ def delete_discourse():
     return redirect("http://localhost:3000/dashboard")
 
 
-@app.route('/update_status')
+@app.route('/api/update_status')
 def update_status():
     dis_id = request.args.get('dis_id')
     s_value = request.args.get('s_value')
