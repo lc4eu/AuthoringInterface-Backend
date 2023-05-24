@@ -138,6 +138,7 @@
         
       - Try the following solution -<br/>
         "sudo apt-get remove --purge nodejs"<br/>
+        "sudo apt autoremove"<br/>
       Repeat the commands of step 19 from beginning to setup node properly.
 
 20. Update the node to latest verison -<br/>
