@@ -124,21 +124,21 @@
 18. Open a new terminal in VS Code. Make sure you are in the AuthoringInterface folder.
 
 19. Install nodejs if you do not have it by running the following commands-<br/>
-        "sudo apt update"<br/>
-        "sudo apt install nodejs"<br/>
-        "node -v"<br/>
-        "sudo apt-get install npm"<br/>
-
-        \*Note - If you get the following error - 
+      "sudo apt update"<br/>
+      "sudo apt install nodejs"<br/>
+      "node -v"<br/>
+      "sudo apt-get install npm"<br/>
+        
+    \*Note - If you get the following error - <br/>
         "dpkg: error processing package mysql-server (--configure):dependency problems - leaving          unconfigured No apport report written because the error message indicates its a followup error from a previous failure.
-          Errors were encountered while processing:
+        Errors were encountered while processing:
           mysql-server-8.0
           mysql-server
-          E: Sub-process /usr/bin/dpkg returned an error code (1)"
+        E: Sub-process /usr/bin/dpkg returned an error code (1)"
         
-        - Try the following solution -
-          "sudo apt-get remove --purge nodejs"
-          Repeat the commands of step 19 from beginning to setup node properly.
+      - Try the following solution -<br/>
+        "sudo apt-get remove --purge nodejs"<br/>
+      Repeat the commands of step 19 from beginning to setup node properly.
 
 20. Update the node to latest verison -<br/>
     "sudo snap install curl"<br/>
