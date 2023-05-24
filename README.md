@@ -1,6 +1,6 @@
 # AuthoringInterface
 
-Note - Open a terminal to perform steps 1 to 3.
+\*Note - Open a terminal to perform steps 1 to 3.
 
 1. Python is a pre-requisite for the installation.
 
@@ -46,12 +46,13 @@ Note - Open a terminal to perform steps 1 to 3.
    "sudo apt update"<br/>
    "sudo apt install mysql-server"<br/>
    "sudo mysql"<br/>
-     Now you have entered the mysql environment. Type the following command in it to change the password.
+  
+    Now you have entered the mysql environment. Type the following command in it to change the password.<br/>
    "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'new_password';"<br/>
-     Note - put your desired password in place of 'new_password'<br/>
+    \*Note - put your desired password in place of 'new_password'<br/>
    You can exit mysql by pressing Ctrl + Z
 
-   Note - If you get error run the following commands to uninstall mysql-server and then try the above steps of step 3.3 again from starting-<br/>
+   \*Note - If you get error run the following commands to uninstall mysql-server and then try the above steps of step 3.3 again from starting-<br/>
 
    "sudo apt-get purge mysql-server mysql-client mysql-common mysql-server-core-\* mysql-client-core-\*"<br/>
    "sudo rm -rf /etc/mysql /var/lib/mysql"<br/>
@@ -78,15 +79,15 @@ Note - Open a terminal to perform steps 1 to 3.
 8. Run the following command to get the backend code -<br/>
 
    "git clone https://github.com/v-a-r-s-h-a/backend_AI ."<br/>
-    Note - Do not forget to add the dot
+    \*Note - Do not forget to add the dot
 
 9. Setup Virtual Environment, run the following command in terminal -
 
    - "python3 -m venv env"<br/>
-     Note - If you get the following error -<br/>
+     \*Note - If you get the following error -<br/>
      bash: /home/name/AuthoringInterface/backend/env/bin/python3: No such file or directory<br/>
-     Try the following command -image.png
-      "python -m venv env"image.png
+     Try the following command -<br/>
+      "python -m venv env"<br/>
       If you still get this error. Do the following -<br/>
       "sudo ln -s /usr/bin/python3 /usr/bin/python"<br/>
       "python -m venv env"
@@ -128,23 +129,22 @@ Note - Open a terminal to perform steps 1 to 3.
         "node -v"<br/>
         "sudo apt-get install npm"<br/>
 
-        * Note - If you get the following error - <br/>
-        "dpkg: error processing package mysql-server (--configure):dependency problems - leaving          unconfigured
-          No apport report written because the error message indicates its a followup error from a previous failure.
+        \*Note - If you get the following error - 
+        "dpkg: error processing package mysql-server (--configure):dependency problems - leaving          unconfigured No apport report written because the error message indicates its a followup error from a previous failure.
           Errors were encountered while processing:
           mysql-server-8.0
           mysql-server
-          E: Sub-process /usr/bin/dpkg returned an error code (1)"<br/>
+          E: Sub-process /usr/bin/dpkg returned an error code (1)"
         
-        - Try the following solution -<br/>
-          "sudo apt-get remove --purge nodejs"<br/>
+        - Try the following solution -
+          "sudo apt-get remove --purge nodejs"
           Repeat the commands of step 19 from beginning to setup node properly.
 
 20. Update the node to latest verison -<br/>
     "sudo snap install curl"<br/>
     "curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash -"<br/>
     "sudo apt-get install -y nodejs"<br/>
-      Note - If you get error in this step, run the following command -<br/>
+      \*Note - If you get error in this step, run the following command -<br/>
       "sudo apt remove nodejs"<br/>
       After you have have run the above command restart from step 19.
 
@@ -168,7 +168,7 @@ Note - Open a terminal to perform steps 1 to 3.
 
 28. Now you are in the src folder. Run the following command to get the frontend code.<br/>
     "git clone https://github.com/v-a-r-s-h-a/src_AI ."<br/>
-    Note - Do not forget to add the dot
+    \*Note - Do not forget to add the dot
 
 29. Move out of the src folder with the command -<br/>
     "cd .."
@@ -187,7 +187,7 @@ Note - Open a terminal to perform steps 1 to 3.
     - "npm install react-router-dom --legacy-peer-deps"
     - "npm install @mui/icons-material --legacy-peer-deps"
 
-    - Note - If you cannot install a dependecy add --legacy-peer-deps to it
+    \*Note - If you cannot install a dependecy add --legacy-peer-deps to it
 
 31. Open the file package.json in client. Before the line containing the word dependencies add the following line as it is -<br/>
   "proxy": "http://127.0.0.1:9999",
@@ -196,13 +196,13 @@ Note - Open a terminal to perform steps 1 to 3.
     "npm start"
 
 
-<br/>To start the app use the following commands - <br/>
-    To start the backend run the following commands on one terminal- <br/>
+# To start the app use the following commands -
+  - To start the backend run the following commands on one terminal- <br/>
     "cd backend"<br/>
     "source env/bin/activate"<br/>
     "python3 main.py"<br/>
 
-    To start the frontend run the following commands on another terminal - <br/>
+  - To start the frontend run the following commands on another terminal - <br/>
     "cd client" <br/>
     "npm start"
 
