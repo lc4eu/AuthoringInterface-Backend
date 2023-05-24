@@ -10,7 +10,7 @@ Note - Open a terminal to perform steps 1 to 3.
 
    If you do not have it follow given instructions for the installation of python -
 
-   - Upgrade and update Ubuntu to the latest version
+   - Upgrade and update Ubuntu to the latest version <br/>
      "sudo apt update && sudo apt upgrade"
    - Install the required packages
      "sudo apt install wget build-essential libncursesw5-dev libssl-dev \
@@ -204,3 +204,5 @@ Note - Open a terminal to perform steps 1 to 3.
 
 32. Now you are in the client folder. Start the frontend with the following command -
     - "npm start"
+
+
