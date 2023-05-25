@@ -80,7 +80,7 @@ def usertype():
         print(reviewer_role)
         return str(reviewer_role)
     else:
-        return ""
+        return "You need to login"
 
 
 @app.route('/api/login/', methods=['GET', 'POST'])
@@ -101,6 +101,9 @@ def login():
             session['loggedIn'] = True
             session['author_id'] = auth_id
             session['user_type'] = reviewer_role
+            print(session['loggedIn'])
+            print(session['author_id'])
+            print(session['user_type'])
             return jsonify("Logged in"), 200
         else:
             return jsonify({'error': 'Invalid credentials'}), 401
@@ -111,6 +114,7 @@ def uniq_auth_id2():
     ai = ""
     if "author_id" in session:
         ai = session["author_id"]
+        # print(ai)
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute(
             "SELECT * FROM author WHERE author_id = %s", (str(ai)))
@@ -399,10 +403,13 @@ def orignal_usr_fetch():
 
 @app.route('/api/specific_discourse_usr')
 def specific_discourse_usr():
+    disc_id = request.args.get("disco_id")
+    # disc_id = 3
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute(
-        'SELECT USR_ID,USR_status,create_date,orignal_USR_json FROM usr WHERE discourse_id={0};'.format("5"))
+        'SELECT USR_ID,USR_status,create_date,orignal_USR_json FROM usr WHERE discourse_id = %s', disc_id)
     response = cursor.fetchall()
+    # print("res= ", response)
     return jsonify(response), 200
 
 
@@ -539,7 +546,7 @@ def fileinsert():
 
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute(
-            'SELECT author_name FROM author WHERE author_id = % s ', (session["author_id"], ))
+            'SELECT author_name FROM author WHERE author_id = % s ', (session["author_id"]))
         author_id = cursor.fetchone()
 
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
