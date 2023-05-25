@@ -38,6 +38,20 @@ dis_id = 0
 
 @app.route('/')
 def index():
+    # cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    # cursor.execute("CREATE TABLE IF NOT EXISTS author (author_id int AUTO_INCREMENT , author_name varchar(255), email varchar(255), password varchar(16), reviewer_role varchar(255), PRIMARY KEY(author_id))")
+    # cursor.execute("CREATE TABLE IF NOT EXISTS discourse (discourse_id int NOT NULL AUTO_INCREMENT, discourse_name varchar(255),author_id int, no_sentences int, domain varchar(255), create_date datetime default now(), other_attributes VARCHAR(255), sentences MEDIUMTEXT,PRIMARY KEY (discourse_id),FOREIGN KEY (author_id) REFERENCES author(author_id))")
+    # cursor.execute("CREATE TABLE IF NOT EXISTS usr (author_id int,  discourse_id int, sentence_id varchar(255) ,USR_ID int NOT NULL AUTO_INCREMENT, orignal_USR_json MEDIUMTEXT,final_USR json,create_date datetime default now(),USR_status varchar(255),FOREIGN KEY (discourse_id) REFERENCES discourse(discourse_id),FOREIGN KEY (author_id) REFERENCES author(author_id), PRIMARY KEY (USR_ID))")
+    # cursor.execute(
+    #     "CREATE TABLE IF NOT EXISTS demlo(demlo_id int AUTO_INCREMENT, demlo_txt JSON, PRIMARY KEY (demlo_id))")
+    # cursor.execute("CREATE TABLE IF NOT EXISTS edit(edit_id int AUTO_INCREMENT, edited_USR MEDIUMTEXT, edit_date datetime default now(), author_id int,  discourse_id int, USR_ID int, FOREIGN KEY (author_id) REFERENCES author(author_id),FOREIGN KEY (discourse_id) REFERENCES discourse(discourse_id), FOREIGN KEY (USR_ID) REFERENCES usr(USR_ID), status varchar(255), PRIMARY KEY(edit_id), sent_id varchar(255))")
+    # cursor.execute("CREATE TABLE IF NOT EXISTS `db2`.`semcateofnouns` (`scn_id` INT NOT NULL AUTO_INCREMENT,`scn_value` VARCHAR(45) NULL,`scn_title` VARCHAR(255) NULL,PRIMARY KEY (`scn_id`));")
+    # mysql.connection.commit()
+    return "Backend Running", 200
+
+
+@app.route('/create_database')
+def create_database():
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute("CREATE TABLE IF NOT EXISTS author (author_id int AUTO_INCREMENT , author_name varchar(255), email varchar(255), password varchar(16), reviewer_role varchar(255), PRIMARY KEY(author_id))")
     cursor.execute("CREATE TABLE IF NOT EXISTS discourse (discourse_id int NOT NULL AUTO_INCREMENT, discourse_name varchar(255),author_id int, no_sentences int, domain varchar(255), create_date datetime default now(), other_attributes VARCHAR(255), sentences MEDIUMTEXT,PRIMARY KEY (discourse_id),FOREIGN KEY (author_id) REFERENCES author(author_id))")
@@ -46,8 +60,15 @@ def index():
         "CREATE TABLE IF NOT EXISTS demlo(demlo_id int AUTO_INCREMENT, demlo_txt JSON, PRIMARY KEY (demlo_id))")
     cursor.execute("CREATE TABLE IF NOT EXISTS edit(edit_id int AUTO_INCREMENT, edited_USR MEDIUMTEXT, edit_date datetime default now(), author_id int,  discourse_id int, USR_ID int, FOREIGN KEY (author_id) REFERENCES author(author_id),FOREIGN KEY (discourse_id) REFERENCES discourse(discourse_id), FOREIGN KEY (USR_ID) REFERENCES usr(USR_ID), status varchar(255), PRIMARY KEY(edit_id), sent_id varchar(255))")
     cursor.execute("CREATE TABLE IF NOT EXISTS `db2`.`semcateofnouns` (`scn_id` INT NOT NULL AUTO_INCREMENT,`scn_value` VARCHAR(45) NULL,`scn_title` VARCHAR(255) NULL,PRIMARY KEY (`scn_id`));")
+    cursor.execute("INSERT INTO `semcateofnouns` (`scn_value`, `scn_title`) VALUES ('',''),('anim','Animacy'),('org','Organization'),('mass','Mass'),('abs','Abstract'),('place','Place'),('dow','Day of week'),('moy','Month of year'),('yoc','Year of Century'),('ne','Names of movies or medicine or cuisine or games or disease');")
+    cursor.execute("CREATE TABLE IF NOT EXISTS `sentencetype` ( `sen_id` int NOT NULL AUTO_INCREMENT, `sen_value` varchar(45) DEFAULT NULL, PRIMARY KEY (`sen_id`) ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;")
+    cursor.execute("INSERT INTO `sentencetype` (`sen_value`) VALUES(''),('negative'),('affirmative'),('interrogative'),('yn_interrogative'),('imperative'),('pass-affirmative'),('pass-interrogative');")
+    cursor.execute("CREATE TABLE IF NOT EXISTS `speakersview` ( `spv_id` int NOT NULL AUTO_INCREMENT, `spv_value` varchar(45) DEFAULT NULL, `spv_title` varchar(255) DEFAULT NULL, PRIMARY KEY (`spv_id`) ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;")
+    cursor.execute("INSERT INTO `speakersview` (`spv_value`, `spv_title`) VALUES('',''),('respect','respect'),('def','definiteness'),('deic','deicticity'),('RPs','Relation particles or discourse particles');")
+    cursor.execute("CREATE TABLE IF NOT EXISTS `deprelation` ( `dpr_id` int NOT NULL AUTO_INCREMENT, `dpr_value` varchar(45) DEFAULT NULL, `dpr_title` varchar(255) DEFAULT NULL, PRIMARY KEY (`dpr_id`) ) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;")
+    cursor.execute("INSERT INTO `deprelation` (`dpr_value`, `dpr_title`) VALUES('main','main'), ('card','Cardinals'), ('dem','demonstrative'), ('intf','intensifier'), ('jk1','prayojya karta'), ('k1','kartaa'), ('k1s','karta samAnAdhikaraNa'), ('k2','karmaa'), ('k2p','gola, destination'), ('k2g','gauna karma'), ('k2s','karma samanadhikarana'), ('k3','karaNa'), ('k4','sampradana'), ('k4a','experienecer,anubhava karta'), ('k5','apadana'), ('k5prk','prakruti apadana'), ('k7','vishayadhikarana'), ('k7p','xeSaXiKaraNa'), ('k7t','kAlaXikaraNa'), ('krvn','manner adverb'), ('mk1','madhyastha karta'), ('mod','Quality'), ('neg',''), ('ord','Ordinals'), ('pk1','prayojaka karta'), ('quant','quantifier'), ('r6','sasthi or samandha pada'), ('re','relation elaboration'), ('rh','relation hetu'), ('rt','relation tadartha'), ('ru','relation upamAna'), ('rv','relation ViBAjana'), ('rd','relation direction'), ('rkl','relation kAlalakRaNa'), ('rdl','relation kAlalakRaNa'), ('rask1','relation associate kartaa'), ('rask2','relation associate karma'), ('rask4','relation associate sampradan'), ('rblak','relation Bava lakRaNa ananwarakAlika'), ('rblpk','relation Bava lakRaNa purvakAlika'), ('rpk','relation purvakalika'), ('rsm','relation sWAyi swAmi'), ('rsma','relation asWAyi swami'), ('rsk','relation samAnakAlika'), ('rhh','relation human to human'), ('rblsk','relation BAvalakRaNa samAnakAlika'), ('rvks','relation varwamAnakAlikasamAnAXikaraNa'), ('rbks','relation BhhowakAlikasamAnAXikaraNa'), ('vk2','vakya karma');")
     mysql.connection.commit()
-    return "Backend Running", 200
+    return "Database Created", 200
 
 
 @app.route('/api/signup/', methods=['POST'])
@@ -401,13 +422,43 @@ def orignal_usr_fetch():
     return respone
 
 
-@app.route('/api/specific_discourse_usr')
+@app.route('/specific_discoursename')
+def specific_discoursename():
+    disc_id = request.args.get("disco_id")
+    # disc_id = 3
+    print(disc_id)
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute(
+        "SELECT discourse_name FROM discourse WHERE discourse_id = 54")
+    # cursor.execute(
+    #     "SELECT sentences FROM discourse WHERE discourse_id= %s", disc_id)
+    response = cursor.fetchall()
+    # print("res= ", response)
+    return jsonify(response), 200
+
+
+@app.route('/specific_sentence')
+def specific_sentence():
+    disc_id = request.args.get("disco_id")
+    # disc_id = 3
+    print(disc_id)
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute(
+        "SELECT sentences FROM discourse WHERE discourse_id= 54")
+    # cursor.execute(
+    #     "SELECT sentences FROM discourse WHERE discourse_id= %s", disc_id)
+    response = cursor.fetchall()
+    # print("res= ", response)
+    return jsonify(response), 200
+
+
+@app.route('/specific_discourse_usr')
 def specific_discourse_usr():
     disc_id = request.args.get("disco_id")
     # disc_id = 3
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute(
-        'SELECT USR_ID,USR_status,create_date,orignal_USR_json FROM usr WHERE discourse_id = %s', disc_id)
+        'SELECT USR_ID,USR_status,create_date,orignal_USR_json FROM usr WHERE discourse_id= 54')
     response = cursor.fetchall()
     # print("res= ", response)
     return jsonify(response), 200
