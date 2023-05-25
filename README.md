@@ -117,7 +117,7 @@
 15. Run the backend using the following command -<br/>
     "python3 main.py"
 
-16. Type "http://127.0.0.1:9999/" on your browser to enable the creation of databases.
+16. Type "http://127.0.0.1:9999/create_database" on your browser to enable the creation of databases. Please load it only once.
 
 # Setup for frontend -
 
