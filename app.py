@@ -422,6 +422,28 @@ def orignal_usr_fetch():
     return respone
 
 
+@app.route('/specific_usrs/', methods=['GET'])
+def specific_usrs():
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute("SELECT orignal_USR_json FROM usr WHERE discourse_id = 54")
+    result = cursor.fetchall()
+    return jsonify([dict(row) for row in result])
+
+# @app.route('/specific_usrs')
+# def specific_usrs():
+#     disc_id = request.args.get("disco_id")
+#     # disc_id = 3
+#     # print(disc_id)
+#     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+#     cursor.execute(
+#         "SELECT orignal_USR_json FROM usr WHERE discourse_id = 54")
+#     # cursor.execute(
+#     #     "SELECT sentences FROM discourse WHERE discourse_id= %s", disc_id)
+#     response = cursor.fetchall()
+#     # print("res= ", response)
+#     return jsonify(response), 200
+
+
 @app.route('/specific_discoursename')
 def specific_discoursename():
     disc_id = request.args.get("disco_id")
