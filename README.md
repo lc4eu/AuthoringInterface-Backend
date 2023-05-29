@@ -149,49 +149,19 @@
       "sudo apt remove nodejs"<br/>
       After you have have run the above command restart from step 19.
 
-21. Install create-react-app to make react apps -<br/>
-    "npm install create-react-app"
+23. Make sure you are in the AuthoringInderface directory. Now run the following command to get the frontend code.<br/>
+    "git clone https://github.com/v-a-r-s-h-a/client"<br/>
 
-22. Run the following command to create a react app -<br/>
-    "npx create-react-app client"
+24. A folder named client can be seen in the AuthoringInterface folder.
 
-23. A folder named client can be seen in the AuthoringInterface folder.
-
-24. Expand the folder and you will see a folder named src. Delete the content of the src folder. Now you have an empty src folder.
-
-25. Come back to the terminal. At the moment you will be in the AuthoringInterface folder.
-
-26. Enter the client folder by running the command -<br/>
+29. Move inside the client folder with the following command -<br/>
     "cd client"
 
-27. Move inside the src folder with the command -<br/>
-    "cd src"
+30. Make sure you are in the client folder. Install all the following dependencies -<br/>
+    - "npm i"
 
-28. Now you are in the src folder. Run the following command to get the frontend code.<br/>
-    "git clone https://github.com/v-a-r-s-h-a/src_AI ."<br/>
-    \*Note - Do not forget to add the dot
-
-29. Move out of the src folder with the command -<br/>
-    "cd .."
-
-30. Install all the following dependencies -<br/>
-    - "npm install axios --legacy-peer-deps"
-    - "npm install file-saver --legacy-peer-deps"
-    - "npm install jszip --save --legacy-peer-deps"
-    - "npm install --legacy-peer-deps @material-ui/core"
-    - "npm install --legacy-peer-deps @material-ui/icons"
-    - "npm install --legacy-peer-deps react-icons"
-    - "npm install @emotion/react @emotion/styled --legacy-peer-deps"
-    - "npm install @mui/material --legacy-peer-deps"
-    - "npm install reactjs-popup --save --legacy-peer-deps"
-    - "npm install --save react-modal --legacy-peer-deps"
-    - "npm install react-router-dom --legacy-peer-deps"
-    - "npm install @mui/icons-material --legacy-peer-deps"
-
-    \*Note - If you cannot install a dependecy add --legacy-peer-deps to it
-
-31. Open the file package.json in client. Before the line containing the word dependencies add the following line as it is -<br/>
-  "proxy": "http://127.0.0.1:9999",
+    \*Note - If you cannot install a dependecy add --legacy-peer-deps or "-force" to it as shown below - <br/>
+    "npm i -force"
 
 32. Now you are in the client folder. Start the frontend with the following command -<br/>
     "npm start"
