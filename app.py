@@ -80,7 +80,6 @@ def login():
         email = data.get('email')
         password = data.get('password')
         reviewer_role = data.get('reviewer_role')
-        print(reviewer_role)
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute(
             'SELECT author_id, author_name, email, reviewer_role FROM author WHERE email = % s AND password = % s ', (email, password))
@@ -93,11 +92,16 @@ def login():
             cursor.execute(
                 "SELECT author_id, author_name, email, reviewer_role FROM author WHERE author_id = %s", str(session['author_id']))
             authdet = cursor.fetchone()
-            print(authdet)
-            print(session)
             return jsonify(authdet), 200
         else:
             return jsonify({'error': 'Invalid credentials'}), 401
+
+
+@ app.route('/logout')
+def logout():
+    session["logged_in"] = True
+    session.clear()
+    return jsonify("Logged out"), 200
 
 
 @app.route('/usrgenerate', methods=['POST'])
@@ -171,7 +175,6 @@ def displayUSR(corpus_for_usr):
         os.remove("./USRGenerator/parser/bulk_USRs/"+file)
     with open("./USRGenerator/parser/sentences_for_USR", "r", encoding='utf-8') as f:
         for data in f:
-            print(data)
             file_to_paste = open(
                 "./USRGenerator/parser/txt_files/bh-1", "w", encoding='utf-8')
             file_to_paste_temp = open(
@@ -211,71 +214,11 @@ def displayUSR(corpus_for_usr):
         usr_dict['SentenceType'] = usr_list[10].strip().split(",")
         # generated_usrs[file]=usr_dict
         gs.append(usr_dict)
-    # print(gs[0])
-    # print(gs)
     return gs
     # return jsonify(generated_usrs)
 
 
-# sent = "सूर्यास्त के बाद आकाश को देखना कितना अच्छा लगता है ।"
-# print(displayUSR(sent))
-
-
-# @app.route('/usrgenerate', methods=['GET', 'POST'])
-# @cross_origin()# @login_required
-# def usrgenerate():
-
-    if request.method == "POST" and 'sentences' in request.form and 'discourse_name' in request.form:
-        sentences = request.json['sentences']
-        discourse_name = request.json['discourse_name']
-        print(sentences)
-
-        email = session.get('email')
-        print(email)
-
-        # if request.form.get('Save Sentences') == 'Save discourse':
-        # Saving user details to the discourse table
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute(
-            "SELECT author_id FROM author WHERE email = %s", [email])
-        author_id = session["author_id"]
-        # (cursor.fetchone())['author_id']
-        # print(author_id)
-        cursor.execute("INSERT INTO discourse(author_id, sentences, discourse_name) VALUES(%s, %s, %s)",
-                       (author_id, sentences, discourse_name))
-        mysql.connection.commit()
-        row_id = cursor.lastrowid
-        list_usr = list(displayUSR(sentences))
-
-        # saving generated usr in database in usr table
-        for i in range(len(list_usr)):
-            cursor.execute("INSERT INTO usr(author_id,discourse_id,sentence_id,orignal_USR_json) VALUES(%s,%s,%s,%s)",
-                           (author_id, row_id, 1, displayUSR(sentences)[i]))
-        #    {'Concept': ['eka_1', 'Sera_1', 'jaMgala_1', 'so_1-0_rahA_WA_1'], 'Index': [1, 2, 3, 4], 'SemCateOfNouns': ['', '', '', ''], 'GNP': ['', '[m sg a]', '[m sg a]', ''], 'DepRel': ['2:card', '4:k1', '4:k7p', '0:main'], 'Discourse': ['', '', '', ''], 'SpeakersView': ['', '', '', ''], 'Scope': ['', '', '', ''], 'SentenceType': ['affirmative']}))
-
-        mysql.connection.commit()
-
-        # saving sentence entered by user in updatedSentence.txt
-        with open("client/public/updatedSentence.txt", "w") as sentfile:
-            str2 = ""
-            str_end = ["।", "|", "?", "."]
-            for word in sentences:
-                str2 += word
-                if word in str_end:
-                    str2 = str2.strip()
-                    sentfile.write(str2+"\n")
-                    str2 = ""
-
-        # saving generated usr in data.json
-        with open("client/src/data/data.json", "w") as f:
-            f.write(str(list_usr).replace("'", '"'))
-            f.close()
-            flash("USR Generated")
-
-        return jsonify(message='USR Generated!')
-
-
-@app.route('/fileinsert', methods=['GET', 'POST'])
+@app.route('/fileinsert', methods=['POST'])
 def fileinsert():
     global dis_id
     if request.method == "POST":
@@ -354,6 +297,109 @@ def specific_discourse_usr(discourse_id):
     return jsonify(response), 200
 
 
+@app.route('/dicourses_for_a_user/<author_id>', methods=['GET'])
+def uniqu_dis(author_id):
+    if request.method == 'GET':
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute(
+            "SELECT distinct discourse.discourse_id,discourse_name,sentences,USR_status FROM discourse JOIN usr ON discourse.discourse_id=usr.discourse_id WHERE discourse.author_id = {0}".format(author_id))
+        dasdata = cursor.fetchall()
+        return jsonify(dasdata), 200
+    else:
+        return "Data could not be fetched due to some error!", 400
+
+
+@ app.route('/card_data/<author_id>', methods=['GET'])
+def card_data(author_id):
+    if request.method == 'GET':
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute(
+            'SELECT * from discourse WHERE author_id = {0} '.format(author_id))
+        discourse = cursor.fetchall()
+        no_of_discourses = len(discourse)
+        cursor.execute(
+            'SELECT * from usr WHERE author_id = {0} '.format(author_id))
+        usr = cursor.fetchall()
+        no_of_usrs = len(usr)
+        cursor.execute(
+            'SELECT distinct discourse_id from edit WHERE author_id = {0} AND status= {0}'.format(author_id, "Approved"))
+        no_of_approved = len(cursor.fetchall())
+        return jsonify(discourse_count=no_of_discourses, usr_count=no_of_usrs, approved_count=no_of_approved), 200
+    else:
+        return "Data could not be fetched because of some error!", 400
+
+
+@ app.route('/usr_corresponding_to_discourse/<author_id>', methods=['GET'])
+def usr_corresponding_to_discourse(author_id):
+    try:
+        if request.method == 'GET':
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute(
+                "SELECT * FROM discourse JOIN usr ON discourse.discourse_id=usr.discourse_id WHERE discourse.author_id = {0}".format(author_id))
+            usrRows = cursor.fetchall()
+            return jsonify(usrRows), 200
+        else:
+            return "Data could not be fetched because of some error!", 400
+    except Exception as e:
+        print(e)
+
+
+@ app.route('/authors')
+def author():
+    try:
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute(
+            "SELECT author_id, author_name, email, password, reviewer_role FROM author")
+        authRows = cursor.fetchall()
+        respone = jsonify(authRows)
+        respone.status_code = 200
+        return respone
+    except Exception as e:
+        print(e)
+
+
+@ app.route('/discourse')
+def discourse():
+    try:
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute(
+            "SELECT discourse_id, author_id, no_sentences, domain,create_date, other_attributes, sentences, discourse_name FROM discourse")
+        disRows = cursor.fetchall()
+        respone = jsonify(disRows)
+        respone.status_code = 200
+        return respone
+    except Exception as e:
+        print(e)
+
+
+@ app.route('/USR')
+def USR():
+    try:
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute("SELECT * FROM usr")
+        usrRows = cursor.fetchall()
+        respone = jsonify(usrRows)
+        respone.status_code = 200
+        return respone
+    except Exception as e:
+        print(e)
+
+
+@ app.route('/USR/<USR_ID>')
+def usr_details(USR_ID):
+    try:
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute(
+            "SELECT author_id, discourse_id, sentence_id, USR_ID, orignal_USR_json, final_USR, create_date, USR_status FROM usr WHERE discourse_id =%s", [USR_ID])
+        usrRow = cursor.fetchall()
+        respone = jsonify(usrRow)
+        respone.status_code = 200
+        return respone
+    except Exception as e:
+        print(e)
+
+
 @app.route('/getUSRid')
 def getusrid():
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
@@ -423,19 +469,19 @@ def get_edit_usr():
         print(e)
 
 
-@app.route('/api/orignal_usr_fetch/')
+@app.route('/orignal_usr_fetch', methods=['GET'])
 def orignal_usr_fetch():
-    global dis_id
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    # print("Hello ",dis_id)
-    query = 'SELECT e1.usr_id, e1.edited_usr, e1.edit_date,e1.status FROM edit e1 INNER JOIN ( SELECT usr_id, MAX(edit_date) AS max_edit_date FROM edit WHERE discourse_id =%s GROUP BY usr_id ) e2 ON e1.usr_id = e2.usr_id AND e1.edit_date = e2.max_edit_date WHERE e1.discourse_id = %s ORDER BY e1.usr_id'
-    params = (dis_id, dis_id)
-    # print("Executing query:", query % params)
-    cursor.execute(query, params)
-    author_name = cursor.fetchall()
-    respone = jsonify(author_name)
-    respone.status_code = 200
-    return respone
+    if request.method == 'GET':
+        global dis_id
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        # print("Hello ",dis_id)
+        query = 'SELECT e1.usr_id, e1.edited_usr, e1.edit_date,e1.status FROM edit e1 INNER JOIN ( SELECT usr_id, MAX(edit_date) AS max_edit_date FROM edit WHERE discourse_id =%s GROUP BY usr_id ) e2 ON e1.usr_id = e2.usr_id AND e1.edit_date = e2.max_edit_date WHERE e1.discourse_id = %s ORDER BY e1.usr_id'
+        params = (dis_id, dis_id)
+        cursor.execute(query, params)
+        data = cursor.fetchall()
+        return jsonify(data), 200
+    else:
+        return "Data could not be fetched because of some error!", 400
 
 
 @app.route('/sentence_id_fetch')
@@ -449,115 +495,6 @@ def sentence_id_fetch():
     return respone
 
 
-@ app.route('/authors')
-def author():
-    try:
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute(
-            "SELECT author_id, author_name, email, password, reviewer_role FROM author")
-        authRows = cursor.fetchall()
-        respone = jsonify(authRows)
-        respone.status_code = 200
-        return respone
-    except Exception as e:
-        print(e)
-
-
-@ app.route('/discourse')
-def discourse():
-    try:
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute(
-            "SELECT discourse_id, author_id, no_sentences, domain,create_date, other_attributes, sentences, discourse_name FROM discourse")
-        disRows = cursor.fetchall()
-        respone = jsonify(disRows)
-        respone.status_code = 200
-        return respone
-    except Exception as e:
-        print(e)
-
-
-@ app.route('/USR')
-def USR():
-    try:
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute("SELECT * FROM usr")
-        usrRows = cursor.fetchall()
-        respone = jsonify(usrRows)
-        respone.status_code = 200
-        return respone
-    except Exception as e:
-        print(e)
-
-
-@ app.route('/USR/<USR_ID>')
-def usr_details(USR_ID):
-    try:
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute(
-            "SELECT author_id, discourse_id, sentence_id, USR_ID, orignal_USR_json, final_USR, create_date, USR_status FROM usr WHERE discourse_id =%s", [USR_ID])
-        usrRow = cursor.fetchall()
-        respone = jsonify(usrRow)
-        respone.status_code = 200
-        return respone
-    except Exception as e:
-        print(e)
-
-
-@ app.errorhandler(404)
-def resource_not_found(e):
-    return jsonify(error=str("Invalid URL")), 404
-
-
-@ app.route('/logout')
-def logout():
-    session["logged_in"] = True
-    session.clear()
-    return jsonify("Logged out"), 200
-
-
-@ app.route('/api/card_data')
-def card_data():
-    if "author_id" in session:
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        author_id = session['author_id']
-        # author_id = 1
-        cursor.execute(
-            'SELECT * from discourse WHERE author_id = % s ', (author_id, ))
-        discourse = cursor.fetchall()
-        dis = len(discourse)
-        cursor.execute(
-            'SELECT * from usr WHERE author_id = % s ', (author_id, ))
-        usr = cursor.fetchall()
-        us = len(usr)
-        cursor.execute(
-            'SELECT distinct discourse_id from edit WHERE author_id = %s AND status= %s', (author_id, "Approved"))
-        st = len(cursor.fetchall())
-        response = jsonify(discourse_count=dis, usr_count=us, app_count=st)
-        response.status_code = 200
-        return response
-    else:
-        return 400
-
-
-@ app.route('/api/dashboard_data')
-def dashboard_data():
-    try:
-        if "author_id" in session:
-            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute(
-                "SELECT * FROM discourse JOIN usr ON discourse.discourse_id=usr.discourse_id WHERE discourse.author_id = {0}".format(session["author_id"]))
-            disRows = cursor.fetchall()
-            respone = jsonify(disRows)
-            respone.status_code = 200
-            return respone, 200
-        else:
-            return 400
-    except Exception as e:
-        print(e)
-
-
 def disc_id():
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute(
@@ -567,56 +504,6 @@ def disc_id():
     dis_id = a["discourse_id"]
     mysql.connection.commit()
     return dis_id
-
-
-@ app.route('/read_n_enter', methods=['GET', 'POST'])
-def read_n_enter():
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    file = open("read/Suryast.txt", encoding="utf=8")
-
-    read = file.read()
-    file.seek(0)
-
-    line = 1
-    for word in read:
-        if word == '\n':
-            line += 1
-
-    arr = []
-    for i in range(line):
-        arr.append(file.readline())
-
-    sl = ""
-    dis_str = ""
-    l = []
-    c = 1
-    for x in arr:
-        if "#" in x:
-            dis_str += x[1:]
-            c = 1
-            l.append(sl)
-            sl = ""
-
-        if c <= 10:
-            sl += x
-            c += 1
-
-    l.append(sl)
-
-    # cursor.execute("INSERT INTO discourse(author_id, sentences, discourse_name) VALUES(%s, %s, %s)",
-    #                (1, dis_str, "try"))
-
-    it = 1
-    for i in range(1, len(l)):
-        file = open("read/out_gen/"+str(it), "w", encoding="utf=8")
-        it += 1
-        file.write(l[i])
-
-    # for i in range(1, len(l)):
-        cursor.execute(
-            "INSERT INTO usr(author_id, discourse_id, orignal_USR_json, USR_status) VALUES(%s, %s, %s, %s)", (1, disc_id(), l[i], "In Edit"))
-    mysql.connection.commit()
-    return jsonify("Read and Entered")
 
 
 @app.route('/view_btn_data')
@@ -698,6 +585,3 @@ def get_deprelation():
     cursor.execute("SELECT * FROM deprelation;")
     result = cursor.fetchall()
     return jsonify([dict(row) for row in result])
-
-# if __name__=='__main__':
-#     app.run(host='0.0.0.0',port=9999)
