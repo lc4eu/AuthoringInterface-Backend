@@ -23,30 +23,9 @@ CORS(app)
 auth_id = 1
 dis_id = 0
 
-# http://127.0.0.1:9999/एक शेर जंगल में सो रहा था। वो चूहे पर बहुत गुस्सा करता है। चूहा उससे विनती करता है कि वह उसे जाने दे। एक दिन वह उसकी सहायता करेगा। चूहे की बात सुनकर शेर हंसता है। एक दिन वह उसकी सहायता करेगा।
-# @app.route('/')
-# def index():
-#     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-#     cursor.execute("CREATE TABLE IF NOT EXISTS author (author_id int AUTO_INCREMENT , author_name varchar(255), email varchar(255), password varchar(16), reviewer_role varchar(255), PRIMARY KEY(author_id))")
-#     cursor.execute("CREATE TABLE IF NOT EXISTS discourse (discourse_id int NOT NULL AUTO_INCREMENT, discourse_name varchar(255),author_id int, no_sentences int, domain varchar(255), create_date datetime default now(), other_attributes VARCHAR(255), sentences MEDIUMTEXT,PRIMARY KEY (discourse_id),FOREIGN KEY (author_id) REFERENCES author(author_id))")
-#     cursor.execute("CREATE TABLE IF NOT EXISTS usr (author_id int,  discourse_id int, sentence_id varchar(255) ,USR_ID int NOT NULL AUTO_INCREMENT, orignal_USR_json MEDIUMTEXT,final_USR json,create_date datetime default now(),USR_status varchar(255),FOREIGN KEY (discourse_id) REFERENCES discourse(discourse_id),FOREIGN KEY (author_id) REFERENCES author(author_id), PRIMARY KEY (USR_ID))")
-#     cursor.execute(
-#         "CREATE TABLE IF NOT EXISTS demlo(demlo_id int AUTO_INCREMENT, demlo_txt JSON, PRIMARY KEY (demlo_id))")
-#     mysql.connection.commit()
-#     return jsonify(message='all good!')
-
 
 @app.route('/')
 def index():
-    # cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    # cursor.execute("CREATE TABLE IF NOT EXISTS author (author_id int AUTO_INCREMENT , author_name varchar(255), email varchar(255), password varchar(16), reviewer_role varchar(255), PRIMARY KEY(author_id))")
-    # cursor.execute("CREATE TABLE IF NOT EXISTS discourse (discourse_id int NOT NULL AUTO_INCREMENT, discourse_name varchar(255),author_id int, no_sentences int, domain varchar(255), create_date datetime default now(), other_attributes VARCHAR(255), sentences MEDIUMTEXT,PRIMARY KEY (discourse_id),FOREIGN KEY (author_id) REFERENCES author(author_id))")
-    # cursor.execute("CREATE TABLE IF NOT EXISTS usr (author_id int,  discourse_id int, sentence_id varchar(255) ,USR_ID int NOT NULL AUTO_INCREMENT, orignal_USR_json MEDIUMTEXT,final_USR json,create_date datetime default now(),USR_status varchar(255),FOREIGN KEY (discourse_id) REFERENCES discourse(discourse_id),FOREIGN KEY (author_id) REFERENCES author(author_id), PRIMARY KEY (USR_ID))")
-    # cursor.execute(
-    #     "CREATE TABLE IF NOT EXISTS demlo(demlo_id int AUTO_INCREMENT, demlo_txt JSON, PRIMARY KEY (demlo_id))")
-    # cursor.execute("CREATE TABLE IF NOT EXISTS edit(edit_id int AUTO_INCREMENT, edited_USR MEDIUMTEXT, edit_date datetime default now(), author_id int,  discourse_id int, USR_ID int, FOREIGN KEY (author_id) REFERENCES author(author_id),FOREIGN KEY (discourse_id) REFERENCES discourse(discourse_id), FOREIGN KEY (USR_ID) REFERENCES usr(USR_ID), status varchar(255), PRIMARY KEY(edit_id), sent_id varchar(255))")
-    # cursor.execute("CREATE TABLE IF NOT EXISTS `db2`.`semcateofnouns` (`scn_id` INT NOT NULL AUTO_INCREMENT,`scn_value` VARCHAR(45) NULL,`scn_title` VARCHAR(255) NULL,PRIMARY KEY (`scn_id`));")
-    # mysql.connection.commit()
     return "Backend Running", 200
 
 
@@ -59,7 +38,7 @@ def create_database():
     cursor.execute(
         "CREATE TABLE IF NOT EXISTS demlo(demlo_id int AUTO_INCREMENT, demlo_txt JSON, PRIMARY KEY (demlo_id))")
     cursor.execute("CREATE TABLE IF NOT EXISTS edit(edit_id int AUTO_INCREMENT, edited_USR MEDIUMTEXT, edit_date datetime default now(), author_id int,  discourse_id int, USR_ID int, FOREIGN KEY (author_id) REFERENCES author(author_id),FOREIGN KEY (discourse_id) REFERENCES discourse(discourse_id), FOREIGN KEY (USR_ID) REFERENCES usr(USR_ID), status varchar(255), PRIMARY KEY(edit_id), sent_id varchar(255))")
-    cursor.execute("CREATE TABLE IF NOT EXISTS `db2`.`semcateofnouns` (`scn_id` INT NOT NULL AUTO_INCREMENT,`scn_value` VARCHAR(45) NULL,`scn_title` VARCHAR(255) NULL,PRIMARY KEY (`scn_id`));")
+    cursor.execute("CREATE TABLE IF NOT EXISTS `semcateofnouns` (`scn_id` INT NOT NULL AUTO_INCREMENT,`scn_value` VARCHAR(45) NULL,`scn_title` VARCHAR(255) NULL,PRIMARY KEY (`scn_id`));")
     cursor.execute("INSERT INTO `semcateofnouns` (`scn_value`, `scn_title`) VALUES ('',''),('anim','Animacy'),('org','Organization'),('mass','Mass'),('abs','Abstract'),('place','Place'),('dow','Day of week'),('moy','Month of year'),('yoc','Year of Century'),('ne','Names of movies or medicine or cuisine or games or disease');")
     cursor.execute("CREATE TABLE IF NOT EXISTS `sentencetype` ( `sen_id` int NOT NULL AUTO_INCREMENT, `sen_value` varchar(45) DEFAULT NULL, PRIMARY KEY (`sen_id`) ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;")
     cursor.execute("INSERT INTO `sentencetype` (`sen_value`) VALUES(''),('negative'),('affirmative'),('interrogative'),('yn_interrogative'),('imperative'),('pass-affirmative'),('pass-interrogative');")
@@ -115,17 +94,20 @@ def login():
         print(reviewer_role)
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute(
-            'SELECT * FROM author WHERE email = % s AND password = % s ', (email, password))
+            'SELECT author_id, author_name, email, reviewer_role FROM author WHERE email = % s AND password = % s ', (email, password))
         author = cursor.fetchone()
         if author:
             auth_id = author['author_id']
             session['loggedIn'] = True
             session['author_id'] = auth_id
             session['user_type'] = reviewer_role
-            print(session['loggedIn'])
-            print(session['author_id'])
-            print(session['user_type'])
-            return jsonify("Logged in"), 200
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute(
+                "SELECT * FROM author WHERE author_id = %s", str(session['author_id']))
+            authdet = cursor.fetchone()
+            print(authdet)
+            print(session)
+            return jsonify(authdet), 200
         else:
             return jsonify({'error': 'Invalid credentials'}), 401
 
@@ -140,13 +122,14 @@ def uniq_auth_id2():
         cursor.execute(
             "SELECT * FROM author WHERE author_id = %s", (str(ai)))
         authdet = cursor.fetchall()
-        cursor.execute(
-            "SELECT * FROM discourse JOIN usr ON discourse.discourse_id=usr.discourse_id WHERE discourse.author_id = %s", (str(ai)))
-        dasdata = cursor.fetchall()
+        print(authdet)
+        # cursor.execute(
+        #     "SELECT * FROM discourse JOIN usr ON discourse.discourse_id=usr.discourse_id WHERE discourse.author_id = %s", (str(ai)))
+        # dasdata = cursor.fetchall()
         # respone = jsonify(authdet)
         return jsonify(authdet[0]), 200
     else:
-        return "No", 400
+        return jsonify("No"), 400
 
 
 @app.route('/api/uniqu_dis', methods=['GET', 'POST'])
@@ -289,54 +272,55 @@ def displayUSR(corpus_for_usr):
 # @cross_origin()# @login_required
 # def usrgenerate():
 
-#     if request.method == "POST" and 'sentences' in request.form and 'discourse_name' in request.form:
-#         sentences = request.json['sentences']
-#         discourse_name = request.json['discourse_name']
-#         print(sentences)
+    if request.method == "POST" and 'sentences' in request.form and 'discourse_name' in request.form:
+        sentences = request.json['sentences']
+        discourse_name = request.json['discourse_name']
+        print(sentences)
 
-#         email = session.get('email')
-#         print(email)
+        email = session.get('email')
+        print(email)
 
-#         # if request.form.get('Save Sentences') == 'Save discourse':
-#         # Saving user details to the discourse table
-#         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-#         cursor.execute(
-#             "SELECT author_id FROM author WHERE email = %s", [email])
-#         author_id = session["author_id"]
-#         # (cursor.fetchone())['author_id']
-#         # print(author_id)
-#         cursor.execute("INSERT INTO discourse(author_id, sentences, discourse_name) VALUES(%s, %s, %s)",
-#                        (author_id, sentences, discourse_name))
-#         mysql.connection.commit()
-#         row_id = cursor.lastrowid
-#         list_usr = list(displayUSR(sentences))
+        # if request.form.get('Save Sentences') == 'Save discourse':
+        # Saving user details to the discourse table
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute(
+            "SELECT author_id FROM author WHERE email = %s", [email])
+        author_id = session["author_id"]
+        # (cursor.fetchone())['author_id']
+        # print(author_id)
+        cursor.execute("INSERT INTO discourse(author_id, sentences, discourse_name) VALUES(%s, %s, %s)",
+                       (author_id, sentences, discourse_name))
+        mysql.connection.commit()
+        row_id = cursor.lastrowid
+        list_usr = list(displayUSR(sentences))
 
-#         # saving generated usr in database in usr table
-#         for i in range(len(list_usr)):
-#             cursor.execute("INSERT INTO usr(author_id,discourse_id,sentence_id,orignal_USR_json) VALUES(%s,%s,%s,%s)",
-#                            (author_id, row_id, 1, displayUSR(sentences)[i]))
-#         #    {'Concept': ['eka_1', 'Sera_1', 'jaMgala_1', 'so_1-0_rahA_WA_1'], 'Index': [1, 2, 3, 4], 'SemCateOfNouns': ['', '', '', ''], 'GNP': ['', '[m sg a]', '[m sg a]', ''], 'DepRel': ['2:card', '4:k1', '4:k7p', '0:main'], 'Discourse': ['', '', '', ''], 'SpeakersView': ['', '', '', ''], 'Scope': ['', '', '', ''], 'SentenceType': ['affirmative']}))
+        # saving generated usr in database in usr table
+        for i in range(len(list_usr)):
+            cursor.execute("INSERT INTO usr(author_id,discourse_id,sentence_id,orignal_USR_json) VALUES(%s,%s,%s,%s)",
+                           (author_id, row_id, 1, displayUSR(sentences)[i]))
+        #    {'Concept': ['eka_1', 'Sera_1', 'jaMgala_1', 'so_1-0_rahA_WA_1'], 'Index': [1, 2, 3, 4], 'SemCateOfNouns': ['', '', '', ''], 'GNP': ['', '[m sg a]', '[m sg a]', ''], 'DepRel': ['2:card', '4:k1', '4:k7p', '0:main'], 'Discourse': ['', '', '', ''], 'SpeakersView': ['', '', '', ''], 'Scope': ['', '', '', ''], 'SentenceType': ['affirmative']}))
 
-#         mysql.connection.commit()
+        mysql.connection.commit()
 
-#         # saving sentence entered by user in updatedSentence.txt
-#         with open("client/public/updatedSentence.txt", "w") as sentfile:
-#             str2 = ""
-#             str_end = ["।", "|", "?", "."]
-#             for word in sentences:
-#                 str2 += word
-#                 if word in str_end:
-#                     str2 = str2.strip()
-#                     sentfile.write(str2+"\n")
-#                     str2 = ""
+        # saving sentence entered by user in updatedSentence.txt
+        with open("client/public/updatedSentence.txt", "w") as sentfile:
+            str2 = ""
+            str_end = ["।", "|", "?", "."]
+            for word in sentences:
+                str2 += word
+                if word in str_end:
+                    str2 = str2.strip()
+                    sentfile.write(str2+"\n")
+                    str2 = ""
 
-#         # saving generated usr in data.json
-#         with open("client/src/data/data.json", "w") as f:
-#             f.write(str(list_usr).replace("'", '"'))
-#             f.close()
-#             flash("USR Generated")
+        # saving generated usr in data.json
+        with open("client/src/data/data.json", "w") as f:
+            f.write(str(list_usr).replace("'", '"'))
+            f.close()
+            flash("USR Generated")
 
-#         return jsonify(message='USR Generated!')
+        return jsonify(message='USR Generated!')
+
 
 @app.route('/getUSRid')
 def getusrid():
@@ -376,7 +360,7 @@ def editusr():
 @app.route('/editstatus/', methods=['GET', 'POST'])
 def editstatus():
     if request.method == "POST":
-        author_id = sesion["author_id"]
+        author_id = session["author_id"]
         discourse_id = dis_id
         data = request.get_json()
         status = data.get('status')
@@ -414,7 +398,7 @@ def orignal_usr_fetch():
     # print("Hello ",dis_id)
     query = 'SELECT e1.usr_id, e1.edited_usr, e1.edit_date,e1.status FROM edit e1 INNER JOIN ( SELECT usr_id, MAX(edit_date) AS max_edit_date FROM edit WHERE discourse_id =%s GROUP BY usr_id ) e2 ON e1.usr_id = e2.usr_id AND e1.edit_date = e2.max_edit_date WHERE e1.discourse_id = %s ORDER BY e1.usr_id'
     params = (dis_id, dis_id)
-    print("Executing query:", query % params)
+    # print("Executing query:", query % params)
     cursor.execute(query, params)
     author_name = cursor.fetchall()
     respone = jsonify(author_name)
@@ -422,21 +406,34 @@ def orignal_usr_fetch():
     return respone
 
 
-@app.route('/specific_usrs/', methods=['GET'])
+@app.route('/specific_usrs', methods=['GET'])
 def specific_usrs():
+    disc_id = request.args.get("discourse_id")
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute("SELECT orignal_USR_json FROM usr WHERE discourse_id = 54")
+    cursor.execute(
+        "SELECT orignal_USR_json FROM usr WHERE discourse_id = 54")
     result = cursor.fetchall()
     return jsonify([dict(row) for row in result])
 
-# @app.route('/specific_usrs')
-# def specific_usrs():
+
+@app.route('/specific_discoursename/', methods=['GET'])
+def specific_discoursename():
+    disc_id = request.args.get("disco_id")
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute(
+        "SELECT discourse_name FROM discourse WHERE discourse_id = 54")
+    result = cursor.fetchall()
+    return jsonify([dict(row) for row in result])
+
+
+# @app.route('/specific_discoursename')
+# def specific_discoursename():
 #     disc_id = request.args.get("disco_id")
 #     # disc_id = 3
-#     # print(disc_id)
+#     print(disc_id)
 #     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 #     cursor.execute(
-#         "SELECT orignal_USR_json FROM usr WHERE discourse_id = 54")
+#         "SELECT discourse_name FROM discourse WHERE discourse_id = 54")
 #     # cursor.execute(
 #     #     "SELECT sentences FROM discourse WHERE discourse_id= %s", disc_id)
 #     response = cursor.fetchall()
@@ -444,29 +441,14 @@ def specific_usrs():
 #     return jsonify(response), 200
 
 
-@app.route('/specific_discoursename')
-def specific_discoursename():
-    disc_id = request.args.get("disco_id")
-    # disc_id = 3
-    print(disc_id)
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute(
-        "SELECT discourse_name FROM discourse WHERE discourse_id = 54")
-    # cursor.execute(
-    #     "SELECT sentences FROM discourse WHERE discourse_id= %s", disc_id)
-    response = cursor.fetchall()
-    # print("res= ", response)
-    return jsonify(response), 200
-
-
 @app.route('/specific_sentence')
 def specific_sentence():
     disc_id = request.args.get("disco_id")
     # disc_id = 3
-    print(disc_id)
+    # print(disc_id)
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute(
-        "SELECT sentences FROM discourse WHERE discourse_id= 54")
+        "SELECT sentences FROM discourse WHERE discourse_id= 23")
     # cursor.execute(
     #     "SELECT sentences FROM discourse WHERE discourse_id= %s", disc_id)
     response = cursor.fetchall()
@@ -562,7 +544,7 @@ def resource_not_found(e):
 def logout():
     session["logged_in"] = True
     session.clear()
-    return redirect("http://localhost:3000/")
+    return jsonify("Logged out"), 200
 
 
 @ app.route('/api/card_data')
