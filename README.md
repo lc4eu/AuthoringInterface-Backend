@@ -67,21 +67,21 @@
 
 # Setup for backend -
 
-4. Make a folder named AuthoringInterface.
+5. Make a folder named AuthoringInterface.
 
-5. Inside the AuthoringInterface make a new folder named backend.
+6. Inside the AuthoringInterface make a new folder named backend.
 
-6. Open a terminal in VS code.
+7. Open a terminal in VS code.
 
-7. Move inside the backend folder with the following command-<br/>
+8. Move inside the backend folder with the following command-<br/>
      "cd backend"
 
-8. Run the following command to get the backend code -<br/>
+9. Run the following command to get the backend code -<br/>
 
    "git clone https://github.com/v-a-r-s-h-a/backend_AI ."<br/>
     \*Note - Do not forget to add the dot
 
-9. Setup Virtual Environment, run the following command in terminal -
+10. Setup Virtual Environment, run the following command in terminal -
 
    - "python3 -m venv env"<br/>
      \*Note - If you get the following error -<br/>
@@ -92,32 +92,32 @@
       "sudo ln -s /usr/bin/python3 /usr/bin/python"<br/>
       "python -m venv env"
 
-10. Enable the virtual environment using the following command -<br/>
+11. Enable the virtual environment using the following command -<br/>
     For ubuntu - "source env/bin/activate"<br/>
     For windows - "env/bin/activate"
 
-11. Run the following commands in the terminal to install dependencies<br/>
+12. Run the following commands in the terminal to install dependencies<br/>
     "sudo apt-get install python3-dev default-libmysqlclient-dev build-essential"<br/>
     "python3 -m ensurepip"<br/>
     "pip install -r requirements.txt"
 
-12. Inside the env\lib\python3.10\site-packages\flask_navigation\item.py, change line 131 and 132 with below code - <br/>
+13. Inside the env\lib\python3.10\site-packages\flask_navigation\item.py, change line 131 and 132 with below code - <br/>
     class ItemCollection(collections.abc.MutableSequence,
     collections.abc.Iterable):
 
-13. Inside the env\lib\python3.10\site-packages\flask_navigation\navbar.py, change line 7 below code -<br/>
+14. Inside the env\lib\python3.10\site-packages\flask_navigation\navbar.py, change line 7 below code -<br/>
     class NavigationBar(collections.abc.Iterable):
 
-14. Now the config.py file needs to modified, you can find this file in the backend folder. The variable needs to updated with the values that you created while setting up your mySQL workbench environment.<br/>
+15. Now the config.py file needs to modified, you can find this file in the backend folder. The variable needs to updated with the values that you created while setting up your mySQL workbench environment.<br/>
     The variable that need to be changed is -<br/>
       app.config['MYSQL_PASSWORD'] = '?'<br/>
 
     The value for 'MYSQL_PASSWORD' is the password that you set while setting mysql-server. Instead of ? type your password.
 
-15. Run the backend using the following command -<br/>
+16. Run the backend using the following command -<br/>
     "python3 main.py"
 
-16. Type "http://127.0.0.1:9999/create_database" on your browser to enable the creation of databases. Please load it only once.
+17. Type "http://127.0.0.1:9999/create_database" on your browser to enable the creation of databases. Please load it only once.
 
 # Setup for frontend -
 
@@ -149,21 +149,21 @@
       "sudo apt remove nodejs"<br/>
       After you have have run the above command restart from step 19.
 
-23. Make sure you are in the AuthoringInderface directory. Now run the following command to get the frontend code.<br/>
+21. Make sure you are in the AuthoringInderface directory. Now run the following command to get the frontend code.<br/>
     "git clone https://github.com/v-a-r-s-h-a/client"<br/>
 
-24. A folder named client can be seen in the AuthoringInterface folder.
+22. A folder named client can be seen in the AuthoringInterface folder.
 
-29. Move inside the client folder with the following command -<br/>
+23. Move inside the client folder with the following command -<br/>
     "cd client"
 
-30. Make sure you are in the client folder. Install all the following dependencies -<br/>
+24. Make sure you are in the client folder. Install all the following dependencies -<br/>
     - "npm i"
 
     \*Note - If you cannot install a dependecy add --legacy-peer-deps or "-force" to it as shown below - <br/>
     "npm i -force"
 
-32. Now you are in the client folder. Start the frontend with the following command -<br/>
+25. Now you are in the client folder. Start the frontend with the following command -<br/>
     "npm start"
 
 
