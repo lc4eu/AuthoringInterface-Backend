@@ -1,4 +1,4 @@
-from flask import Flask, flash, render_template, request, redirect, url_for, session, jsonify
+from flask import Flask, flash, request, session, jsonify
 from flask_mysqldb import MySQL
 from flask_session import Session
 from config import app
@@ -10,18 +10,8 @@ import os
 import json
 from flask_cors import CORS, cross_origin
 
-# from client.src.Navigation import login
-# from flask_restx import Api, Resource, fields
-# import jwt
-# from .models import db, Users
-# from flask_restx import Api, Resource, fields
-# import jwt
-# from .models import db, Users
-
 Session(app)
 CORS(app)
-auth_id = 1
-dis_id = 0
 
 
 @app.route('/')
@@ -106,7 +96,6 @@ def logout():
 
 @app.route('/usrgenerate', methods=['POST'])
 @cross_origin()
-# @login_required
 def usrgenerate():
     if request.method == "POST":
         data = json.loads(request.data)
@@ -122,15 +111,15 @@ def usrgenerate():
         cursor.execute("INSERT INTO discourse(author_id, sentences, discourse_name) VALUES(%s, %s, %s)",
                        (author_id, discourse, discourse_name))
         mysql.connection.commit()
-        row_id = cursor.lastrowid
+        discourse_id = cursor.lastrowid
         list_usr = list(displayUSR(discourse))
 
         # saving generated usr in database in usr table
         for i in range(len(list_usr)):
             cursor.execute("INSERT INTO usr(author_id,discourse_id,sentence_id,orignal_USR_json,USR_status) VALUES(%s,%s,%s,%s,%s)",
-                           (author_id, row_id, i+1, list_usr[i], "In Edit"))
+                           (author_id, discourse_id, i+1, list_usr[i], "In Edit"))
             cursor.execute("INSERT INTO edit(author_id,discourse_id,sent_id,edited_USR,status) VALUES(%s,%s,%s,%s,%s)",
-                           (author_id, row_id, i+1, list_usr[i], "In Edit"))
+                           (author_id, discourse_id, i+1, list_usr[i], "In Edit"))
             mysql.connection.commit()
 
         # saving sentence entered by user in updatedSentence.txt
@@ -150,7 +139,7 @@ def usrgenerate():
             f.close()
             flash("USR Generated")
 
-        return jsonify(message='USR Generated!'), 200
+        return jsonify(discourse_id), 200
     else:
         return "Something went wrong", 400
 
@@ -214,15 +203,14 @@ def displayUSR(corpus_for_usr):
         usr_dict['SpeakersView'] = usr_list[8].strip().split(",")
         usr_dict['Scope'] = usr_list[9].strip().split(",")
         usr_dict['SentenceType'] = usr_list[10].strip().split(",")
+        usr_dict['Construction'] = ""
         # generated_usrs[file]=usr_dict
         gs.append(usr_dict)
     return gs
-    # return jsonify(generated_usrs)
 
 
 @app.route('/fileinsert', methods=['POST'])
 def fileinsert():
-    global dis_id
     if request.method == "POST":
         data = request.get_json()
         sentences = data.get('sentences')
@@ -242,78 +230,38 @@ def fileinsert():
         cursor.execute("INSERT INTO discourse(author_id, sentences, discourse_name, no_sentences) VALUES(%s, %s, %s,%s)",
                        (author_id, sentences, discourse_name, no_sentences))
         mysql.connection.commit()
-        row_id = cursor.lastrowid
-        dis_id = row_id
+        discourse_id = cursor.lastrowid
+        print(discourse_id)
 
         for i in range(no_sentences):
+
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute(
-                "INSERT INTO usr(author_id, discourse_id, orignal_USR_json, USR_status) VALUES(%s, %s, %s, %s)", (author_id, dis_id, jsondata[i], "In Edit"))
+                "INSERT INTO usr(author_id, discourse_id, orignal_USR_json, USR_status) VALUES(%s, %s, %s, %s)", (author_id, discourse_id, jsondata[i], "In Edit"))
             mysql.connection.commit()
             usrid = cursor.lastrowid
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute("INSERT INTO edit(author_id, discourse_id, edited_USR, status, USR_ID, sent_id) VALUES(%s, %s, %s, %s, %s, %s)",
-                           (author_id, dis_id, jsondata[i], "In Edit", usrid, '2'))
+                           (author_id, discourse_id, jsondata[i], "In Edit", usrid, '2'))
             mysql.connection.commit()
 
-    return redirect(url_for('orignal_usr_fetch'))
+        return jsonify(discourse_id), 200
+    else:
+        return "USRs could not be uploaded!", 400
 
 
-@app.route('/orignal_usr_fetch', methods=['GET'])
-def orignal_usr_fetch():
+@app.route('/orignal_usr_fetch/<discourse_id>', methods=['GET'])
+def orignal_usr_fetch(discourse_id):
     if request.method == 'GET':
-        global dis_id
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         # print("Hello ",dis_id)
         query = 'SELECT e1.usr_id, e1.edited_usr, e1.edit_date,e1.status FROM edit e1 INNER JOIN ( SELECT usr_id, MAX(edit_date) AS max_edit_date FROM edit WHERE discourse_id =%s GROUP BY usr_id ) e2 ON e1.usr_id = e2.usr_id AND e1.edit_date = e2.max_edit_date WHERE e1.discourse_id = %s ORDER BY e1.usr_id'
-        params = (dis_id, dis_id)
+        params = (discourse_id, discourse_id)
         cursor.execute(query, params)
         data = cursor.fetchall()
         return jsonify(data), 200
     else:
         return "Data could not be fetched because of some error!", 400
-
-
-@app.route('/specific_usrs/<discourse_id>', methods=['GET'])
-def specific_usrs(discourse_id):
-    if request.method == "GET":
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute(
-            "SELECT orignal_USR_json FROM usr WHERE discourse_id = {0}".format(discourse_id))
-        result = cursor.fetchall()
-        return jsonify(result), 200
-    else:
-        return "Could not fetch data", 400
-
-
-@app.route('/specific_discoursename/<discourse_id>', methods=['GET'])
-def specific_discoursename(discourse_id):
-    if request.method == "GET":
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute(
-            "SELECT discourse_name FROM discourse WHERE discourse_id = {0}".format(discourse_id))
-        result = cursor.fetchaone()
-        return jsonify(result), 200
-    else:
-        return "Could not fetch data", 400
-
-
-@app.route('/specific_sentence/<discourse_id>')
-def specific_sentence(discourse_id):
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute(
-        "SELECT sentences FROM discourse WHERE discourse_id= {0}".format(discourse_id))
-    response = cursor.fetchone()
-    return jsonify(response), 200
-
-
-@app.route('/specific_discourse_usr/<discourse_id>')
-def specific_discourse_usr(discourse_id):
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute(
-        'SELECT USR_ID,USR_status,create_date,orignal_USR_json FROM usr WHERE discourse_id= {0}'.format(discourse_id))
-    response = cursor.fetchall()
-    return jsonify(response), 200
 
 
 @app.route('/dicourses_for_a_user/<author_id>', methods=['GET'])
@@ -363,27 +311,13 @@ def usr_corresponding_to_discourse(author_id):
         print(e)
 
 
-@ app.route('/authors')
-def author():
+@ app.route('/discourse/<discourse_id>')
+def discourse(discourse_id):
     try:
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute(
-            "SELECT author_id, author_name, email, password, reviewer_role FROM author")
-        authRows = cursor.fetchall()
-        respone = jsonify(authRows)
-        respone.status_code = 200
-        return respone
-    except Exception as e:
-        print(e)
-
-
-@ app.route('/discourse')
-def discourse():
-    try:
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute(
-            "SELECT discourse_id, author_id, no_sentences, domain,create_date, other_attributes, sentences, discourse_name FROM discourse")
-        disRows = cursor.fetchall()
+            "SELECT * FROM discourse WHERE discourse_id={0}".format(discourse_id))
+        disRows = cursor.fetchone()
         respone = jsonify(disRows)
         respone.status_code = 200
         return respone
@@ -391,169 +325,55 @@ def discourse():
         print(e)
 
 
-@ app.route('/USR')
-def USR():
-    try:
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute("SELECT * FROM usr")
-        usrRows = cursor.fetchall()
-        respone = jsonify(usrRows)
-        respone.status_code = 200
-        return respone
-    except Exception as e:
-        print(e)
-
-
-@ app.route('/USR/<USR_ID>')
-def usr_details(USR_ID):
-    try:
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute(
-            "SELECT author_id, discourse_id, sentence_id, USR_ID, orignal_USR_json, final_USR, create_date, USR_status FROM usr WHERE discourse_id =%s", [USR_ID])
-        usrRow = cursor.fetchall()
-        respone = jsonify(usrRow)
-        respone.status_code = 200
-        return respone
-    except Exception as e:
-        print(e)
-
-
-@app.route('/getUSRid')
-def getusrid():
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute(
-        'SELECT USR_ID FROM usr WHERE discourse_id = % s AND author_id = %s', (dis_id, session["author_id"]))
-    usr_id = cursor.fetchall()
-    respone = jsonify(usr_id)
-    respone.status_code = 200
-    return respone
-
-
-@app.route('/editusr/', methods=['GET', 'POST'])
+@app.route('/editusr', methods=['POST'])
 @cross_origin()
 def editusr():
     if request.method == "POST":
-        # email = session.get('email')
-        # print(email)
-        author_id = session["author_id"]
-        discourse_id = dis_id
         data = request.get_json()
         finalJson = data.get('finalJson')
         usrid = data.get('usrid')
-        print("Editusr usrid:", usrid)
-        # edit_usr = request.get_json()
-        # sentence_id = request.get_json()
+        author_id = data.get('author_id')
+
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute("INSERT INTO edit(author_id, discourse_id, edited_USR, status, usr_id) VALUES(%s,%s,%s,%s,%s)",
-                       (author_id, dis_id, finalJson, "In Edit", usrid))
+        cursor.execute("INSERT INTO edit(author_id, edited_USR, status, usr_id) VALUES(%s,%s,%s,%s)",
+                       (author_id, finalJson, "In Edit", usrid))
         mysql.connection.commit()
-        # print(email, author_id, discourse_id)
-        dat = {'message': 'Edited Successfully!!!'}
-    return jsonify(dat)
-    # return jsonify(message='Edited Successfully!')
+        return jsonify("Edited Successfully!!!"), 200
+    else:
+        return "Could not make changes, Something went wrong!", 400
 
 
-@app.route('/editstatus/', methods=['GET', 'POST'])
+@app.route('/editstatus', methods=['POST'])
 def editstatus():
     if request.method == "POST":
-        author_id = session["author_id"]
-        discourse_id = dis_id
         data = request.get_json()
         status = data.get('status')
         usrid = data.get('usrid')
-        print(status)
-        print(usrid)
-        # sentence_id = data.get('sentence_id')
+        author_id = data.get('author_id')
+
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute(
-            "UPDATE edit SET status=%s WHERE usr_id=%s and discourse_id=%s AND author_id = %s", (status, usrid, dis_id, author_id))
+            "UPDATE edit SET status=%s WHERE usr_id=%s AND author_id = %s", (status, usrid, author_id))
         mysql.connection.commit()
-        # print(email, author_id, discourse_id)
-        dat = {'message': 'Status updated successfully'}
-    return jsonify(dat)
+        return jsonify("Status updated successfully"), 200
+    else:
+        return "Could not make changes, Something went wrong!", 400
 
 
-@app.route('/get_edit_usr', methods=['GET'])
-def get_edit_usr():
-    try:
+@app.route('/delete_discourse/<discourse_id>', methods=['DELETE'])
+def delete_discourse(discourse_id):
+    if request.method == 'DELETE':
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute(
-            "SELECT edit_id, author_id, discourse_id, edited_USR, status, sent_id, edit_date FROM edit WHERE author_id = %s", session["author_id"])
-        usrRows = cursor.fetchall()
-        respone = jsonify(usrRows)
-        respone.status_code = 200
-        return respone
-    except Exception as e:
-        print(e)
-
-
-@app.route('/sentence_id_fetch')
-def sentence_id_fetch():
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute(
-        'SELECT sent_id FROM edit WHERE discourse_id = % s ', (dis_id, ))
-    sent_id = cursor.fetchall()
-    respone = jsonify(sent_id)
-    respone.status_code = 200
-    return respone
-
-
-def disc_id():
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute(
-        "SELECT discourse_id FROM discourse ORDER BY discourse_id DESC LIMIT 1;")
-    dis_id = cursor.fetchall()
-    a = dis_id[0]
-    dis_id = a["discourse_id"]
-    mysql.connection.commit()
-    return dis_id
-
-
-@app.route('/view_btn_data')
-def orignal_usr_fetch2():
-    dis_id = request.args.get('dis_id')
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute(
-        'SELECT * FROM discourse JOIN edit ON discourse.discourse_id=edit.discourse_id WHERE edit.discourse_id={0}'.format(dis_id))
-    view_data = cursor.fetchall()
-    response = jsonify(view_data)
-    response.status_code = 200
-    mysql.connection.commit()
-    return response
-
-
-@app.route('/delete_discourse')
-def delete_discourse():
-    dis_id = request.args.get('dis_id')
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-
-    cursor.execute(
-        'DELETE FROM edit WHERE edit.discourse_id={0}'.format(dis_id))
-    cursor.execute(
-        'DELETE FROM usr WHERE usr.discourse_id={0}'.format(dis_id))
-    cursor.execute(
-        'DELETE FROM discourse WHERE discourse.discourse_id={0}'.format(dis_id))
-    mysql.connection.commit()
-    # return "Done",200
-    return redirect("http://localhost:3000/dashboard")
-
-
-@app.route('/update_status')
-def update_status():
-    dis_id = request.args.get('dis_id')
-    s_value = request.args.get('s_value')
-    usr_id = request.args.get('usr_id')
-    print("bdsfbd", usr_id)
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-
-    cursor.execute(
-        'UPDATE usr SET USR_status={0} WHERE discourse_id={1} AND USR_ID={2}'.format(s_value, dis_id, usr_id))
-    cursor.execute(
-        'UPDATE edit SET status={0} WHERE discourse_id={1} AND USR_ID={2}'.format(s_value, dis_id, usr_id))
-
-    mysql.connection.commit()
-    return "Status updated", 200
+            'DELETE FROM edit WHERE edit.discourse_id={0}'.format(discourse_id))
+        cursor.execute(
+            'DELETE FROM usr WHERE usr.discourse_id={0}'.format(discourse_id))
+        cursor.execute(
+            'DELETE FROM discourse WHERE discourse.discourse_id={0}'.format(discourse_id))
+        mysql.connection.commit()
+        return "Discourse Deleted Successfully!", 200
+    else:
+        return "Could not delete the discourse!", 400
 
 
 @app.route('/semcateofnouns', methods=['GET'])
@@ -567,7 +387,7 @@ def get_nouns():
         return "Data could not be fecthed", 400
 
 
-@app.route('/dbsentencetype/', methods=['GET'])
+@app.route('/sentencetype', methods=['GET'])
 def get_sentencetype():
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute("SELECT * FROM sentencetype;")
@@ -575,7 +395,7 @@ def get_sentencetype():
     return jsonify([dict(row) for row in result])
 
 
-@app.route('/dbspeakersview/', methods=['GET'])
+@app.route('/speakersview', methods=['GET'])
 def get_speakersview():
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute("SELECT * FROM speakersview;")
@@ -583,9 +403,41 @@ def get_speakersview():
     return jsonify([dict(row) for row in result])
 
 
-@app.route('/dbdeprelation/', methods=['GET'])
+@app.route('/deprelation', methods=['GET'])
 def get_deprelation():
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute("SELECT * FROM deprelation;")
     result = cursor.fetchall()
     return jsonify([dict(row) for row in result])
+
+
+@app.route('/update_status', methods=['PUT'])
+def update_status():
+    if request.method == 'PUT':
+        dis_id = request.args.get('dis_id')
+        s_value = request.args.get('s_value')
+        usr_id = request.args.get('usr_id')
+        print("bdsfbd", usr_id)
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+
+        cursor.execute(
+            'UPDATE usr SET USR_status={0} WHERE discourse_id={1} AND USR_ID={2}'.format(s_value, dis_id, usr_id))
+        cursor.execute(
+            'UPDATE edit SET status={0} WHERE discourse_id={1} AND USR_ID={2}'.format(s_value, dis_id, usr_id))
+
+        mysql.connection.commit()
+        return "Status updated", 200
+    else:
+        return "Could not update the status", 400
+
+
+@app.route('/specific_usrs/<discourse_id>', methods=['GET'])
+def specific_usrs(discourse_id):
+    if request.method == "GET":
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute(
+            "SELECT orignal_USR_json FROM usr WHERE discourse_id = {0}".format(discourse_id))
+        result = cursor.fetchall()
+        return jsonify(result), 200
+    else:
+        return "Could not fetch data", 400
