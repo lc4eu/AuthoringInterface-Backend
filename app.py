@@ -127,8 +127,10 @@ def usrgenerate():
 
         # saving generated usr in database in usr table
         for i in range(len(list_usr)):
-            cursor.execute("INSERT INTO usr(author_id,discourse_id,sentence_id,orignal_USR_json) VALUES(%s,%s,%s,%s)",
-                           (author_id, row_id, i+1, list_usr[i]))
+            cursor.execute("INSERT INTO usr(author_id,discourse_id,sentence_id,orignal_USR_json,USR_status) VALUES(%s,%s,%s,%s,%s)",
+                           (author_id, row_id, i+1, list_usr[i], "In Edit"))
+            cursor.execute("INSERT INTO edit(author_id,discourse_id,sent_id,edited_USR,status) VALUES(%s,%s,%s,%s,%s)",
+                           (author_id, row_id, i+1, list_usr[i], "In Edit"))
             mysql.connection.commit()
 
         # saving sentence entered by user in updatedSentence.txt
@@ -227,16 +229,18 @@ def fileinsert():
         discourse_name = data.get('discourse_name')
         jsondata = data.get('jsondata')
         sentencearray = data.get('sentencearray')
+        author_id = data.get('author_id')
+
         no_sentences = len(sentencearray)
 
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute(
-            'SELECT author_name FROM author WHERE author_id = % s ', session['author_id'])
-        author_id = cursor.fetchone()
+        # cursor.execute(
+        #     'SELECT author_name FROM author WHERE author_id = {0} '.format(author_id))
+        # author_id = cursor.fetchone()
 
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute("INSERT INTO discourse(author_id, sentences, discourse_name, no_sentences) VALUES(%s, %s, %s,%s)",
-                       (session["author_id"], sentences, discourse_name, no_sentences))
+                       (author_id, sentences, discourse_name, no_sentences))
         mysql.connection.commit()
         row_id = cursor.lastrowid
         dis_id = row_id
@@ -244,15 +248,30 @@ def fileinsert():
         for i in range(no_sentences):
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute(
-                "INSERT INTO usr(author_id, discourse_id, orignal_USR_json, USR_status) VALUES(%s, %s, %s, %s)", (session["author_id"], dis_id, jsondata[i], "In Edit"))
+                "INSERT INTO usr(author_id, discourse_id, orignal_USR_json, USR_status) VALUES(%s, %s, %s, %s)", (author_id, dis_id, jsondata[i], "In Edit"))
             mysql.connection.commit()
             usrid = cursor.lastrowid
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
             cursor.execute("INSERT INTO edit(author_id, discourse_id, edited_USR, status, USR_ID, sent_id) VALUES(%s, %s, %s, %s, %s, %s)",
-                           (auth_id, dis_id, jsondata[i], "In Edit", usrid, '2'))
+                           (author_id, dis_id, jsondata[i], "In Edit", usrid, '2'))
             mysql.connection.commit()
 
     return redirect(url_for('orignal_usr_fetch'))
+
+
+@app.route('/orignal_usr_fetch', methods=['GET'])
+def orignal_usr_fetch():
+    if request.method == 'GET':
+        global dis_id
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        # print("Hello ",dis_id)
+        query = 'SELECT e1.usr_id, e1.edited_usr, e1.edit_date,e1.status FROM edit e1 INNER JOIN ( SELECT usr_id, MAX(edit_date) AS max_edit_date FROM edit WHERE discourse_id =%s GROUP BY usr_id ) e2 ON e1.usr_id = e2.usr_id AND e1.edit_date = e2.max_edit_date WHERE e1.discourse_id = %s ORDER BY e1.usr_id'
+        params = (dis_id, dis_id)
+        cursor.execute(query, params)
+        data = cursor.fetchall()
+        return jsonify(data), 200
+    else:
+        return "Data could not be fetched because of some error!", 400
 
 
 @app.route('/specific_usrs/<discourse_id>', methods=['GET'])
@@ -469,21 +488,6 @@ def get_edit_usr():
         print(e)
 
 
-@app.route('/orignal_usr_fetch', methods=['GET'])
-def orignal_usr_fetch():
-    if request.method == 'GET':
-        global dis_id
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        # print("Hello ",dis_id)
-        query = 'SELECT e1.usr_id, e1.edited_usr, e1.edit_date,e1.status FROM edit e1 INNER JOIN ( SELECT usr_id, MAX(edit_date) AS max_edit_date FROM edit WHERE discourse_id =%s GROUP BY usr_id ) e2 ON e1.usr_id = e2.usr_id AND e1.edit_date = e2.max_edit_date WHERE e1.discourse_id = %s ORDER BY e1.usr_id'
-        params = (dis_id, dis_id)
-        cursor.execute(query, params)
-        data = cursor.fetchall()
-        return jsonify(data), 200
-    else:
-        return "Data could not be fetched because of some error!", 400
-
-
 @app.route('/sentence_id_fetch')
 def sentence_id_fetch():
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
@@ -535,7 +539,7 @@ def delete_discourse():
     return redirect("http://localhost:3000/dashboard")
 
 
-@app.route('/api/update_status')
+@app.route('/update_status')
 def update_status():
     dis_id = request.args.get('dis_id')
     s_value = request.args.get('s_value')
