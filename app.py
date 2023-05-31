@@ -63,17 +63,21 @@ def signup():
         return jsonify(message='You have successfully registered!'), 200
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['POST'])
 def login():
     if request.method == 'POST':
         data = json.loads(request.data)
         email = data.get('email')
         password = data.get('password')
         reviewer_role = data.get('reviewer_role')
+
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute(
-            'SELECT author_id, author_name, email, reviewer_role FROM author WHERE email = % s AND password = % s ', (email, password))
+            'SELECT * FROM author WHERE email=%s AND password=%s;', (email, password))
+
         author = cursor.fetchone()
+        print(author)
+        print(author)
         if author:
             session['loggedIn'] = True
             session['author_id'] = author['author_id']
@@ -331,13 +335,17 @@ def editusr():
     if request.method == "POST":
         data = request.get_json()
         finalJson = data.get('finalJson')
+        discourseid = data.get('discourseid')
         usrid = data.get('usrid')
         author_id = data.get('author_id')
+        print(usrid)
+        print(discourseid)
 
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute("INSERT INTO edit(author_id, edited_USR, status, usr_id) VALUES(%s,%s,%s,%s)",
-                       (author_id, finalJson, "In Edit", usrid))
+        cursor.execute("INSERT INTO edit(author_id, discourse_id, edited_USR, status, usr_id) VALUES(%s,%s,%s,%s,%s)",
+                       (author_id, discourseid, finalJson, "In Edit", usrid))
         mysql.connection.commit()
+
         return jsonify("Edited Successfully!!!"), 200
     else:
         return "Could not make changes, Something went wrong!", 400
@@ -431,12 +439,12 @@ def update_status():
         return "Could not update the status", 400
 
 
-@app.route('/specific_usrs/<discourse_id>', methods=['GET'])
+@app.route('/usrs_for_a_discourse/<discourse_id>', methods=['GET'])
 def specific_usrs(discourse_id):
     if request.method == "GET":
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute(
-            "SELECT orignal_USR_json FROM usr WHERE discourse_id = {0}".format(discourse_id))
+            "SELECT orignal_USR_json,USR_ID FROM usr WHERE discourse_id = {0}".format(discourse_id))
         result = cursor.fetchall()
         return jsonify(result), 200
     else:
