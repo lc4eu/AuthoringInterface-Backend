@@ -122,6 +122,8 @@ def usrgenerate():
         for i in range(len(list_usr)):
             cursor.execute("INSERT INTO usr(author_id,discourse_id,sentence_id,orignal_USR_json,USR_status) VALUES(%s,%s,%s,%s,%s)",
                            (author_id, discourse_id, i+1, list_usr[i], "In Edit"))
+            mysql.connection.commit()
+
             cursor.execute("INSERT INTO edit(author_id,discourse_id,sent_id,edited_USR,status) VALUES(%s,%s,%s,%s,%s)",
                            (author_id, discourse_id, i+1, list_usr[i], "In Edit"))
             mysql.connection.commit()

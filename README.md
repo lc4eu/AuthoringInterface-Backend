@@ -69,19 +69,13 @@
 
 5. Make a folder named AuthoringInterface.
 
-6. Inside the AuthoringInterface make a new folder named backend.
+6. Open a terminal in VS code.
 
-7. Open a terminal in VS code.
+7. Run the following command to get the backend code -<br/>
 
-8. Move inside the backend folder with the following command-<br/>
-     "cd backend"
+   "https://github.com/v-a-r-s-h-a/backend"<br/>
 
-9. Run the following command to get the backend code -<br/>
-
-   "git clone https://github.com/v-a-r-s-h-a/backend_AI ."<br/>
-    \*Note - Do not forget to add the dot
-
-10. Setup Virtual Environment, run the following command in terminal -
+8. Setup Virtual Environment, run the following command in terminal -
 
    - "python3 -m venv env"<br/>
      \*Note - If you get the following error -<br/>
@@ -92,38 +86,38 @@
       "sudo ln -s /usr/bin/python3 /usr/bin/python"<br/>
       "python -m venv env"
 
-11. Enable the virtual environment using the following command -<br/>
+9. Enable the virtual environment using the following command -<br/>
     For ubuntu - "source env/bin/activate"<br/>
     For windows - "env/bin/activate"
 
-12. Run the following commands in the terminal to install dependencies<br/>
+10. Run the following commands in the terminal to install dependencies<br/>
     "sudo apt-get install python3-dev default-libmysqlclient-dev build-essential"<br/>
     "python3 -m ensurepip"<br/>
     "pip install -r requirements.txt"
 
-13. Inside the env\lib\python3.10\site-packages\flask_navigation\item.py, change line 131 and 132 with below code - <br/>
+11. Inside the env\lib\python3.10\site-packages\flask_navigation\item.py, change line 131 and 132 with below code - <br/>
     class ItemCollection(collections.abc.MutableSequence,
     collections.abc.Iterable):
 
-14. Inside the env\lib\python3.10\site-packages\flask_navigation\navbar.py, change line 7 below code -<br/>
+12. Inside the env\lib\python3.10\site-packages\flask_navigation\navbar.py, change line 7 below code -<br/>
     class NavigationBar(collections.abc.Iterable):
 
-15. Now the config.py file needs to modified, you can find this file in the backend folder. The variable needs to updated with the values that you created while setting up your mySQL workbench environment.<br/>
+13. Now the config.py file needs to modified, you can find this file in the backend folder. The variable needs to updated with the values that you created while setting up your mySQL workbench environment.<br/>
     The variable that need to be changed is -<br/>
       app.config['MYSQL_PASSWORD'] = '?'<br/>
 
     The value for 'MYSQL_PASSWORD' is the password that you set while setting mysql-server. Instead of ? type your password.
 
-16. Run the backend using the following command -<br/>
+14. Run the backend using the following command -<br/>
     "python3 main.py"
 
-17. Type "http://127.0.0.1:9999/create_database" on your browser to enable the creation of databases. Please load it only once.
+15. Type "http://127.0.0.1:9999/create_database" on your browser to enable the creation of databases. Please load it only once.
 
 # Setup for frontend -
 
-18. Open a new terminal in VS Code. Make sure you are in the AuthoringInterface folder.
+16. Open a new terminal in VS Code. Make sure you are in the AuthoringInterface folder.
 
-19. Install nodejs if you do not have it by running the following commands-<br/>
+17. Install nodejs if you do not have it by running the following commands-<br/>
       "sudo apt update"<br/>
       "sudo apt install nodejs"<br/>
       "node -v"<br/>
@@ -141,7 +135,7 @@
         "sudo apt autoremove"<br/>
       Repeat the commands of step 19 from beginning to setup node properly.
 
-20. Update the node to latest verison -<br/>
+18. Update the node to latest verison -<br/>
     "sudo snap install curl"<br/>
     "curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash -"<br/>
     "sudo apt-get install -y nodejs"<br/>
@@ -149,21 +143,21 @@
       "sudo apt remove nodejs"<br/>
       After you have have run the above command restart from step 19.
 
-21. Make sure you are in the AuthoringInderface directory. Now run the following command to get the frontend code.<br/>
+19. Make sure you are in the AuthoringInderface directory. Now run the following command to get the frontend code.<br/>
     "git clone https://github.com/v-a-r-s-h-a/client"<br/>
 
-22. A folder named client can be seen in the AuthoringInterface folder.
+20. A folder named client can be seen in the AuthoringInterface folder.
 
-23. Move inside the client folder with the following command -<br/>
+21. Move inside the client folder with the following command -<br/>
     "cd client"
 
-24. Make sure you are in the client folder. Install all the following dependencies -<br/>
+22. Make sure you are in the client folder. Install all the following dependencies -<br/>
     - "npm i"
 
     \*Note - If you cannot install a dependecy add --legacy-peer-deps or "-force" to it as shown below - <br/>
     "npm i -force"
 
-25. Now you are in the client folder. Start the frontend with the following command -<br/>
+23. Now you are in the client folder. Start the frontend with the following command -<br/>
     "npm start"
 
 
