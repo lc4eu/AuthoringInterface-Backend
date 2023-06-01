@@ -73,7 +73,7 @@
 
 7. Run the following command to get the backend code -<br/>
 
-   "https://github.com/v-a-r-s-h-a/backend"<br/>
+   "git clone https://github.com/v-a-r-s-h-a/backend"<br/>
 
 8. Setup Virtual Environment, run the following command in terminal -
 
