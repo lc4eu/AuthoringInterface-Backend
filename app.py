@@ -451,3 +451,24 @@ def specific_usrs(discourse_id):
         return jsonify(result), 200
     else:
         return "Could not fetch data", 400
+
+
+@app.route('/suggestedConcept', methods=['GET', 'POST'])
+def suggestedConcept():
+    if request.method == "POST":
+        data = json.loads(request.data)
+        concept = data.get('concept')
+        list_of_related_concept = []
+
+        concept_file = open('H_concept-to-mrs-rels.dat', 'r', encoding='utf-8')
+
+        for line in concept_file:
+            if line.startswith("("):
+                each_line_list = line.split(" ")
+                if each_line_list[1].split("_")[0] == concept.split("_")[0]:
+                    list_of_related_concept.append(
+                        each_line_list[1]+":"+each_line_list[2])
+
+        return jsonify(list_of_related_concept), 200
+    else:
+        return "Could not fetch concepts!", 400
