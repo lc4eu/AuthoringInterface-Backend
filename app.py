@@ -466,8 +466,10 @@ def suggestedConcept():
             if line.startswith("("):
                 each_line_list = line.split(" ")
                 if each_line_list[1].split("_")[0] == concept.split("_")[0]:
-                    list_of_related_concept.append(
-                        each_line_list[1]+":"+each_line_list[2])
+                    dict_single_concept = {}
+                    dict_single_concept['Concept'] = each_line_list[1]
+                    dict_single_concept['Meaning'] = each_line_list[2]
+                    list_of_related_concept.append(dict_single_concept)
 
         return jsonify(list_of_related_concept), 200
     else:
