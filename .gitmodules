@@ -1,9 +1,6 @@
 [submodule "parser"]
 	path = parser
 	url = https://irshadbhat@bitbucket.org/iscnlp/parser.git
-[submodule "USRGenerator/parser"]
-	path = USRGenerator/parser
-	url = https://irshadbhat@bitbucket.org/iscnlp/parser.git
 [submodule "USRGenerator/pos-tagger"]
 	path = USRGenerator/pos-tagger
 	url = https://irshadbhat@bitbucket.org/iscnlp/pos-tagger.git
