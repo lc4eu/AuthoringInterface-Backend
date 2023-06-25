@@ -4,6 +4,3 @@
 [submodule "USRGenerator/tokenizer"]
 	path = USRGenerator/tokenizer
 	url = https://irshadbhat@bitbucket.org/iscnlp/tokenizer.git
-[submodule "USRGenerator/parser"]
-	path = USRGenerator/parser
-	url = https://kkiirrti@bitbucket.org/lc4eu/parser.git
