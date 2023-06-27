@@ -259,8 +259,7 @@ def fileinsert():
 def orignal_usr_fetch():
 
     if request.method == 'GET':
-
-        return 'Original_usr_fetch called'
+        return "Original_usr_fetch called",  200
     #     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     #     # print("Hello ",dis_id)
     #     query = 'SELECT e1.usr_id, e1.edited_usr, e1.edit_date,e1.status FROM edit e1 INNER JOIN ( SELECT usr_id, MAX(edit_date) AS max_edit_date FROM edit WHERE discourse_id =%s GROUP BY usr_id ) e2 ON e1.usr_id = e2.usr_id AND e1.edit_date = e2.max_edit_date WHERE e1.discourse_id = %s ORDER BY e1.usr_id'
@@ -272,18 +271,18 @@ def orignal_usr_fetch():
         return "orignal_usr_fetch - Data could not be fetched because of some error!", 400
 
 
-@app.route('/orignal_usr_fetch/<discourse_id>', methods=['GET'])
-def orignal_usr_fetch(discourse_id):
-    if request.method == 'GET':
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        # print("Hello ",dis_id)
-        query = 'SELECT e1.usr_id, e1.edited_usr, e1.edit_date,e1.status FROM edit e1 INNER JOIN ( SELECT usr_id, MAX(edit_date) AS max_edit_date FROM edit WHERE discourse_id =%s GROUP BY usr_id ) e2 ON e1.usr_id = e2.usr_id AND e1.edit_date = e2.max_edit_date WHERE e1.discourse_id = %s ORDER BY e1.usr_id'
-        params = (discourse_id, discourse_id)
-        cursor.execute(query, params)
-        data = cursor.fetchall()
-        return jsonify(data), 200
-    else:
-        return "orignal_usr_fetch/discourse_id Data could not be fetched because of some error!", 400
+# @app.route('/orignal_usr_fetch/<discourse_id>', methods=['GET'])
+# def orignal_usr_fetch(discourse_id):
+#     if request.method == 'GET':
+#         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+#         # print("Hello ",dis_id)
+#         query = 'SELECT e1.usr_id, e1.edited_usr, e1.edit_date,e1.status FROM edit e1 INNER JOIN ( SELECT usr_id, MAX(edit_date) AS max_edit_date FROM edit WHERE discourse_id =%s GROUP BY usr_id ) e2 ON e1.usr_id = e2.usr_id AND e1.edit_date = e2.max_edit_date WHERE e1.discourse_id = %s ORDER BY e1.usr_id'
+#         params = (discourse_id, discourse_id)
+#         cursor.execute(query, params)
+#         data = cursor.fetchall()
+#         return jsonify(data), 200
+#     else:
+#         return "orignal_usr_fetch/discourse_id Data could not be fetched because of some error!", 400
 
 
 
