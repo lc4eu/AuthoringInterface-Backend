@@ -1,0 +1,3 @@
+[submodule "USRGenerator/pos-tagger"]
+	path = USRGenerator/pos-tagger
+	url = https://irshadbhat@bitbucket.org/iscnlp/pos-tagger.git
