@@ -1,0 +1,348 @@
+#एक जंगल में एक शेर था।
+eka_1,jaMgala_1,eka_1,Sera_1,WA_1-past
+1,2,3,4,5
+,,,,
+,,[m sg a],,,[m sg a],
+4:card,5:k7p,4:card,5:k1,0:main
+,,,,
+,,,,
+,,,,
+affirmative
+
+
+#वह एक पेड के नीचे आराम कर रहा था।
+vaha,eka_1,peda_1,nIce_1,ArAma+kara_1-0_rahA_WA_1
+1,2,3,4,5
+,,,,
+[- sg a],,,,
+5:k1,3:card,5:k7,3:lwg__psp,0:main
+,,,,
+,,,,
+,,,,
+affirmative
+
+
+#उस पेड के नीचे एक बिल में एक चूहा रहता था।
+vaha,peda_1,nIce_1,eka_1,bila_1,eka_1,cUhA_1,raha_1-wA_WA_1
+1,2,3,4,5,6,7,8
+,,,,per,,,
+,,,,,[m sg a],,,[m sg a],
+2:nmod__adj,8:k7,2:lwg__psp,7:card,8:k7,7:card,8:k1,0:main
+,,,,,,,
+,,,,,,,
+,,,,,,,
+affirmative
+
+
+#चूहा बिल से बाहर निकला।
+cUhA+bila_1,bAhara_1,nikalA_1-yA_1
+1,2,3
+,,
+,,
+3:k5,3:k7,0:main
+,,
+,,
+,,
+affirmative
+
+
+#वह शेर के ऊपर उछल कूद करने लगा।
+vaha,Sera_1,Upara_1,uCala_1,kUxa+kara_1-gA_1
+1,2,3,4,5
+,,,,
+[- sg a],[m sg a],,[- - -],
+5:k1,4:k7,2:lwg__psp,5:vmod,0:main
+,,,,
+,,,,
+,,,,
+affirmative
+
+
+#इससे शेर को गुस्सा आ गया।
+yaha,Sera_1,gussA_1,A_1-0_gayA_1
+1,2,3,4
+,,,
+[- sg a],[m sg a],[m sg a],
+4:rh,4:k2,4:k1,0:main
+,,,
+,,,
+,,,
+affirmative
+
+
+#उसने चूहे को पकड लिया।
+vaha,cUhA_1,pakada_1-0_liyA_1
+1,2,3
+,,
+[- sg a],[m pl a],
+3:k1,3:k2,0:main
+,,
+,,
+,,
+affirmative
+
+
+#वह चूहे को मारने लगा।
+vaha,cUhA_1,mAra_1-gA_1
+1,2,3
+,,
+[- sg a],[m pl a],
+3:k1,3:k2,0:main
+,,
+,,
+,,
+affirmative
+
+
+#इससे चूहा डर गया।
+yaha,cUhA_1,dara_1-0_gayA_1
+1,2,3
+,,
+[- sg a],[m sg a],
+3:rh,3:k1,0:main
+,,
+,,
+,,
+affirmative
+
+
+#उसने शेर से विनती की मुझे माफ कर दो।
+vaha,Sera_1,vinawI_1,speaker,mAPa+kara_1,xe_1
+1,2,3,4,5,6
+,,,,,
+[- sg a],[m sg a],[f sg a],[- sg u],,
+5:k1,5:k2,4:r6,5:k2,0:main,0:main
+,,,,,
+,,,,,
+,,,,,
+affirmative
+
+
+#जब कभी भी आपको आवश्यकता होगी तब मैं आपकी मदद अवश्य करूँगा।
+jaba,kaBI,BI_1,addressee,AvaSyakawA+ho_1-gA_1,waba,speaker,addressee,avaSya_1,maxaxa+kara_1-gA_1
+1,2,3,4,5,6,7,8,9,10
+,,,,,,,,,
+,,,[- - m],,,[- sg u],[- - m],,
+5:k7t,5:k7t,2:lwg__rp,10:k2,6:nmod__relc,10:k7t,10:k1,10:k2,10:adv,0:main
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+affirmative
+
+
+#शेर को उसकी बात पर हंसी आयी।
+Sera_1,vaha,bAwa_1,haMsa_1,A_1-yA_1
+1,2,3,4,5
+,,,,
+[m sg a],[- sg a],[f sg a],,
+5:k4a,3:r6,5:k7,5:k1,0:main
+,,,,
+,,,,
+,,,,
+affirmative
+
+
+#परन्तु उसने चूहे को छोड दिया।
+paranwu_1,vaha,cUhA_1,Coda_1-0_xiyA_1
+1,2,3,4
+,,,
+,[- sg a],[m pl a],
+0:main,4:k1,4:k2,1:ccof
+,,,
+,,,
+,,,
+affirmative
+
+
+#कुछ समय बाद जंगल में कुछ शिकारी आये।
+kuCa_1,samaya_1,bAxa_1,jaMgala_1,kuCa_1,SikArI_1,A_1-yA_1
+1,2,3,4,5,6,7
+,,,,,,
+,,[m sg a],,[m sg a],,,[m sg a],
+6:nmod__adj,7:k7t,2:lwg__psp,7:k7p,6:nmod__adj,7:k1,0:main
+,,,,,,
+,,,,,,
+,,,,,,
+affirmative
+
+
+#उन्होंने शेर को पकडने के लिये एक जाल बिछाया।
+vaha,Sera_1,pakada_1-yA_1,eka_1,jAla_1,biCA_1-yA_1
+1,2,3,4,5,6
+,,,,,
+[- pl a],[m sg a],,,[m sg a],
+6:k1,3:k2,6:rt,5:card,6:k2,0:main
+,,,,,
+,,,,,
+,,,,,
+affirmative
+
+
+#शेर उस जाल में फंस गया।
+Sera_1,vaha,jAla_1,PaMsa_1-0_gayA_1
+1,2,3,4
+,,,
+[m sg a],,[m sg a],
+4:k1,3:nmod__adj,4:k7p,0:main
+,,,
+,,,
+,,,
+affirmative
+
+
+#शेर जाल से निकलने का प्रयास करने लगा।
+Sera_1,jAla_1,nikala_1-yA_1,prayAsa+kara_1-gA_1
+1,2,3,4
+,,,
+[m sg a],[m sg a],,
+4:k1,3:adv,4:k2,0:main
+,,,
+,,,
+,,,
+affirmative
+
+
+#परन्तु वह जाल से निकल नहीं पाया।
+paranwu_1,vaha,jAla_1,nikala_1,nahIM_1,pA_1
+1,2,3,4,5,6
+,,,,,
+,[- sg a],[m sg a],,,
+0:main,4:k1,4:k5,1:ccof,4:neg,4:lwg__vaux
+,,,,,
+,,,,,
+,,,,,
+negative
+
+
+#शेर बहुत परेशान हो गया।
+Sera_1,bahuwa_1,pareSAna+ho_1-0_gayA_1
+1,2,3
+,,
+[m sg a],,
+3:k1,3:nmod__adj,0:main
+,,
+,,
+,,
+affirmative
+
+
+#वह जोर से दहाडा।
+vaha,jora_1,xahAda_1-yA_1
+1,2,3
+,,
+[- sg a],[m sg a],
+3:k1,3:adv,0:main
+,,
+,,
+,,
+affirmative
+
+
+#उसी समय वह चूहा वहाँ से गुजर रहा था।
+vaha,samaya_1,vaha,cUha_1,vahAz,gujara_1-0_rahA_WA_1
+1,2,3,4,5,6
+,,,,,
+[- sg a],[m sg a],[- sg a],,,
+6:k1,6:k7t,6:k1,6:k1,6:k5,0:main
+,,,,,
+,,,,,
+,,,,,
+affirmative
+
+
+#उसने शेर की दहाड सुनी।
+vaha,Sera_1,xahAda_1,suna_1-yA_1
+1,2,3,4
+,,,
+[- sg a],[m sg a],[f sg a],
+4:k1,3:r6,4:k2,0:main
+,,,
+,,,
+,,,
+affirmative
+
+
+#वह उस ओर दौडा।
+vaha,vaha,ora_1,xOdA_1-yA_1
+1,2,3,4
+,,,
+,,,
+3:nmod__adj,3:nmod__adj,4:k7p,0:main
+,,,
+,,,
+,,,
+affirmative
+
+
+#उसने देखा कि शेर जाल में फंसा हुआ है।
+vaha,xeKA_1-yA_1,ki_1,Sera_1,jAla_1,PaMsA_1-pres
+1,2,3,4,5,6
+,,,,,
+[- sg a],,,[m sg a],[m sg a],
+2:k1,0:main,2:k2,6:k1,6:k7,3:ccof
+,,,,,
+,,,,,
+,,,,,
+affirmative
+
+
+#शेर बहुत परेशान है।
+Sera_1,bahuwa_1,pareSAna_1,hE_1-pres
+1,2,3,4
+,,,
+[m sg a],,,
+4:k1,3:jjmod__intf,4:mod,0:main
+,,,
+,,,
+,,,
+affirmative
+
+
+#वह तेजी से जाल को अपने पैने दाँतों से काटने लगा।
+vaha,wejI_1,jAla_1,apanA,pEnA_1,xAzwA_1,kAta_1-gA_1
+1,2,3,4,5,6,7
+,per,,,,,
+[- sg a],[f sg a],[m sg a],[- sg u],,[m pl a],
+7:k1,7:adv,7:k2,6:r6,6:mod,7:k5,0:main
+,,,,,,
+,,,,,,
+,,,,,,
+affirmative
+
+
+#जिससे जाल जल्दी ही कट गया।
+jo,jAla_1,jalxI_1,hI_1,kata_1-0_gayA_1
+1,2,3,4,5
+,,,,
+[- sg a],[m sg a],,,
+5:rh,5:k1,5:adv,3:lwg__rp,0:main
+,,,,
+,,,,
+,,,,
+affirmative
+
+
+#और शेर जाल से मुक्त हो गया।
+Ora_1,Sera_1,jAla_1,mukwa+ho_1-0_gayA_1
+1,2,3,4
+,,,
+,[m sg a],[m sg a],
+0:main,4:k1,4:adv,1:ccof
+,,,
+,,,
+,,,
+affirmative
+
+
+#शेर ने प्रसन्न होकर चूहे को बहुत धन्यवाद दिया।
+Sera_1,prasanna+ho_1,cUhA_1,bahuwa_1,XanyavAxa+xe_1-0_xiyA_1
+1,2,3,4,5
+per,,,,
+[m sg a],,[m pl a],,
+5:k1,5:vmod,5:k4,5:nmod__adj,0:main
+,,,,
+,,,,
+,,,,
+affirmative
+
+

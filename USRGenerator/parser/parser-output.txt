@@ -1,0 +1,7 @@
+1	राम	राम	NNP	NNP	_	3	k1	_	_
+2	किनको	किनको	PRP	PRP	_	3	k2	_	_
+3	मार	मार	VM	VM	_	0	main	_	_
+4	रहा	रहा	VAUX	VAUX	_	3	lwg__vaux	_	_
+5	है	है	VAUX	VAUX	_	4	lwg__vaux_cont	_	_
+6	?	?	SYM	SYM	_	3	rsym	_	_
+

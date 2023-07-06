@@ -1,0 +1,76 @@
+Required Files:-
+	ilmt-morph-ner-from-api-0.3.zip 
+	install-project.sh 
+	TAM-num-per-details.tsv.wx 
+	H_concept-to-mrs-rels.dat
+	makenewusr.sh
+	delete_1.py
+	generate_usr.py 
+	run_generate_usr.py
+	sentence_check.py
+	ir_no@
+	utf8_wx
+	wx_utf8
+
+(1) Install iscnlp tokenizer, pos-tagger, parser 
+	Please follow the given repository link for the same [https://bitbucket.org/iscnlp/].
+	First, install the tokenizer, then the pos-tagger, and then the parser. 	
+	
+	Now read the readme given in the repository for all the three (tokenizer, pos-tagger, parser) 
+	and run the given commands in terminal.
+	
+Note:	 (Run first command in home directory itself)
+->>>>>>> (Remember to replace python with python3 while running 3rd step of Readme for all 3 
+        i.e tokenizer, pos-tagger,parser i.e sudo python3 setup.py install) 
+Note:   While running 3rd command      
+       [ If you get error related to setuptools means pip is not installed in your system for that :-
+        Run the command-> 
+        sudo apt install python3-pip]
+ 
+        In pos-tagger and parser,
+           Run the dependencies code after installing them with given command.
+	       $ pip install -r requirements.txt
+
+		
+	After installing,	
+		Create a text file named "sentences_for_USR" input file that contains a Hindi Sentence/sentences with their respective IDs separated by Tabs.
+		Eg. 12345	राम खाना खाता है |
+
+->>>> Now make one folder within "parser" folder named "txt_files" and also a text file named "bh-1" inside parser folder only.
+->>>> Make one folder named "bulk_USRs" in the "parser folder".
+->>>> Make one file named "bh-2" within "parser" folder.
+
+(2) Install Morph
+ 	a) Download the given file [ilmt-morph-ner-from-api-0.3.zip] and extract it in parser folder.
+	Now open ilmt-morph-ner-from-api-0.3 folder and put both getMorphAndNER.py and 
+	getMorphPruneAndNER.py python files in parser folder.
+        b) Download the get-pip.py from the link provided :-
+        https://bootstrap.pypa.io/pip/2.7/get-pip.py  and copy the file in the parser folder .
+        Run following commands in terminal in parser folder.
+		sudo apt install python2
+		sudo snap install curl
+		curl https://bootstrap.pypa.io/pip/2.7/get-pip.py --output get-pip.py
+		sudo python2 get-pip.py
+		sudo apt-get install python-requests
+	c)Now copy install-project.sh  file in parser folder and run command 
+		sudo bash install-project.sh
+		
+(3)Download and paste  wx_utf8, utf8_wx and ir_no@ file in parser folder .  
+Now move these files to bin folder by running the following command in terminal.
+   i) $ cd /usr/bin/
+Now run these command one by one :-
+   1) sudo cp ~/parser/wx_utf8 .
+   2) sudo cp ~/parser/utf8_wx .
+   3) sudo cp ~/parser/ir_no@ .
+After following above commands now run these command one by one :- 
+   1) sudo chmod +777 utf8_wx
+   2) sudo chmod +777 wx_utf8 
+   3) sudo chmod +777 ir_no@		
+
+(4) Download and paste the [TAM-num-per-details.tsv.wx] and [H_concept-to-mrs-rels.dat] in parser folder.
+
+(5) For Generating USR ,run the following command in "parser" folder :-
+        python3 run_generate_usr.py
+         [You will observe that 3 files (parser-output.txt ,prune-output.txt and wx.txt) will be created in the txt_files  named folder.]
+   This will generate the USR in the folder named "bulk_USRs" in the parser folder.
+   

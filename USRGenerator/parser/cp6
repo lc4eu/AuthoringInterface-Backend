@@ -1,0 +1,3 @@
+(5) Download and paste the makenewusr.sh ,delete_1.py ,generate_usr.py ,run_generate_usr.py ,sentence_check.py, apertium-eng.eng.dix and USR_c-id_update.py in the parser folder.
+      Now, run the following command in the terminal:
+                 lt-comp lr apertium-eng.eng.dix eng.bin

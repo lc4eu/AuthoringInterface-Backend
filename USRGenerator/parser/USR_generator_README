@@ -1,0 +1,84 @@
+Required Files:-
+	getMorphAndNER.py
+	getMorphPruneAndNER.py
+	install-project.sh 
+	TAM-num-per-details.tsv.wx 
+	H_concept-to-mrs-rels.dat
+	makenewusr.sh
+	delete_1.py
+	generate_usr.py 
+	run_generate_usr.py
+	sentence_check.py
+	apertium-eng.eng.dix
+	USR_c-id_update.py
+	ir_no@
+	utf8_wx
+	wx_utf8
+
+(1) Install iscnlp tokenizer, pos-tagger and parser 
+	Please follow the given repository link for the same [https://bitbucket.org/iscnlp/].
+	
+  First, install the tokenizer, then the pos-tagger, and then the parser. 	
+	
+	Now read the readme given in the repository for all the three (tokenizer, pos-tagger, parser) and run the given commands in terminal.
+	
+Note: Run first command in home directory itself
+->>>>>>> (Remember to replace python with python3 while running 3rd step of Readme for all 3 i.e tokenizer, pos-tagger,parser i.e sudo python3 setup.py install) 
+
+Note: While running 3rd command if you get error related to setuptools means pip is not installed in your system then run the following command :-
+        sudo apt install python3-pip
+ 
+	In pos-tagger and parser,run the dependencies code after installing them with given command:
+	       $ pip install -r requirements.txt
+
+		
+(2) Files and folders creation
+->>>> After installing, create a input text file named "sentences_for_USR" that contains Hindi Sentence/sentences with their respective IDs separated by double space.
+		Eg. 12345  राम खाना खाता है |
+
+->>>> Now make one folder within "parser" folder named "txt_files" and a text file named "bh-1" inside that folder i.e txt_files for the generation of single USR.
+
+->>>> Make two folder named "bulk_USRs" and "bulk_USRs_mod" in the "parser folder" for bulk generation.
+ 
+->>>> Also make one text file named "bh-2" within "parser" folder.
+
+(3) Morph setup
+->>>> Download the get-pip.py from the link provided :-
+"https://bootstrap.pypa.io/pip/2.7/get-pip.py" and keep this file in the parser folder.
+
+->>>> Run the following commands on terminal inside parser folder:
+	i) sudo apt install python2
+	ii) sudo snap install curl
+	iii) curl https://bootstrap.pypa.io/pip/2.7/get-pip.py --output get-pip.py
+	iv) sudo python2 get-pip.py
+	v) sudo apt-get install python-requests
+	vi) sudo bash install-project.sh
+		
+(4) Now move wx_utf8, utf8_wx and ir_no@ files to bin folder by running the following command on terminal.
+	i) cd /usr/bin/
+	ii) sudo cp ~/parser/wx_utf8 .
+	iii) sudo cp ~/parser/utf8_wx .
+	iv) sudo cp ~/parser/ir_no@ .
+After running the above commands now run the following commands:- 
+	i) sudo chmod +777 utf8_wx
+	ii) sudo chmod +777 wx_utf8 
+	iii) sudo chmod +777 ir_no@		
+
+(5) Concept checker insatallion
+->>>> Run the following commands on terminal within parser:
+	i) sudo apt-get -f install apertium-all-dev
+	ii) apt-cache policy | grep apertium
+	iii) sudo apt-get install python3-openpyx		
+	iv) lt-comp lr apertium-eng.eng.dix eng.bin
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Steps for Generating USR:
+
+i) Keep the sentences with their respective IDs seperated by double space in the "sentences_for_USR" file.
+ii) Now, run the following command on the terminal:
+	python3 run_generate_usr.py
+iii) Output USR files will be stored in "bulk_USRs" folder.
+
+
+   

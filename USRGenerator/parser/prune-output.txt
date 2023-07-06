@@ -1,0 +1,33 @@
+Sentence :: राम किनको मार रहा है ?
+Morph Output:
+<Sentence id="1">			
+1	rAma	unk	<fs af='rAma,n,m,sg,3,d,0,0'>|<fs af='rAma,n,m,pl,3,d,0,0'>|<fs af='rAma,n,m,sg,3,o,0,0'>
+2	kinako	unk	<fs af='kOna,pn,any,pl,3,o,ko,ko'>
+3	mAra	unk	<fs af='mAra,n,f,sg,3,d,0,0'>|<fs af='mAra,n,f,sg,3,o,0,0'>|<fs af='mAra,v,any,any,any,,0,0'>
+4	rahA	unk	<fs af='raha,v,m,sg,any,,yA,yA'>
+5	hE	unk	<fs af='hE,v,any,sg,2,,hE,hE'>|<fs af='hE,v,any,sg,3,,hE,hE'>
+6	?	unk	<fs af='?,punc,,,,,,'>
+			
+</Sentence>
+ Pruning Output:
+<Sentence id="1">
+1	rAma	NNPC	<fs af='rAma,n,m,sg,3,d,0,0'>
+2	kinako	NNP	<fs af='kOna,pn,any,pl,3,o,ko,ko' poslcat="NM">
+3	mAra	VM	<fs af='mAra,v,any,any,any,,0,0'>
+4	rahA	VAUX	<fs af='raha,v,m,sg,any,,yA,yA'>
+5	hE	VAUX	<fs af='hE,v,any,sg,2,,hE,hE'>
+6	?	SYM	<fs af='?,punc,,,,,,'>
+</Sentence>
+NER Output:
+<Sentence id="1">
+1	((	NP	<fs etype='ne' esubtype='person'>
+1.1	rAma	unk
+	))
+2	kinako	unk
+3	mAra	unk
+4	rahA	unk
+5	hE	unk
+6	?	unk
+</Sentence>
+
+..................................
